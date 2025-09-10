@@ -7,15 +7,38 @@ export default (sequelize, DataTypes) => {
       primaryKey: true,
       field: "id",
     },
-    offeringName: {
+    offerimg: {
+      type: DataTypes.TEXT, // Change this to DataTypes.TEXT for MariaDB/MySQL
+      allowNull: false,
+      field: "offerimg",
+      // Add getter and setter to automatically convert between array and JSON string
+      get() {
+        const rawValue = this.getDataValue('offerimg');
+        // Parse the JSON string back into an array. Handle null/empty string gracefully.
+        return rawValue ? JSON.parse(rawValue) : [];
+      },
+      set(value) {
+        // Stringify the array into a JSON string before saving to the database
+        this.setDataValue('offerimg', JSON.stringify(value));
+      }
+    },
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "offering_name",
+      field: "title",
     },
-    offeringDescription: {
+    Description: {
       type: DataTypes.TEXT,
       allowNull: true,
-      field: "offering_description",
+      field: "description",
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      field: "created_at",
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      field: "updated_at",
     },
     pujaId: {
       type: DataTypes.BIGINT,

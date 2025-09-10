@@ -12,6 +12,14 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       field: "image_url",
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      field: "created_at",
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      field: "updated_at",
+    },
     pujaId: {
       type: DataTypes.BIGINT,
       allowNull: false,

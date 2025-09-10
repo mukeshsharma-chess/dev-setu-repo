@@ -42,6 +42,8 @@ const PujaForm = () => {
 
 
   const handleChange = async (e, index) => {
+    e.preventDefault();
+
     const { name, value, files } = e.target;
 
     if (files && files[0]) {
@@ -87,7 +89,7 @@ const PujaForm = () => {
       uploadFormData.append("file", file);
 
       try {
-        const res = await fetch(`${baseAPIURL}/upload`, {
+        const res = await fetch(`${baseAPIURL}/uploads`, {
           method: "POST",
           body: uploadFormData,
         });
@@ -150,10 +152,11 @@ const PujaForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("handleSubmit", formData)
     fetchWithWait({ dispatch, action: addNewPujaDataAction(formData) }).then((res) => {
       console.log("Response:", res);
-      if (res.status === 201) {
-        dispatch(requestPujaDataAction()); // Fetch updated puja data
+      if (res.status === 200) {
+        dispatch(requestPujaDataAction());
       } else {
         console.log("Error:", res.error);
         alert(res.error)
@@ -164,7 +167,7 @@ const PujaForm = () => {
   };
 
   return (
-    <div className="flex-1 p-6 overflow-y-auto max-h-screen scrollbar-hide">
+    <div className="flex-1 p-6 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
       <form
         onSubmit={handleSubmit}
         className="mx-auto shadow-md rounded-lg p-6 space-y-6 max-h-screen scrollbar-hide"
@@ -216,36 +219,38 @@ const PujaForm = () => {
           </div>
         </div>
 
-        {/* Special Day */}
-        <div>
-          <label className="block font-semibold">Special Day</label>
-          <input
-            type="text"
-            name="specialDay"
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
+        <div className="grid grid-cols-3 gap-4">
+         {/* Date */}
+          <div>
+            <label className="block font-semibold">Date</label>
+            <DatePicker
+              selected={formData.date}
+              onChange={(date) => setFormData({ ...formData, date })}
+              className="w-full border p-2 rounded"
+            />
+          </div>
 
-        {/* Location */}
-        <div>
-          <label className="block font-semibold">Location</label>
-          <input
-            type="text"
-            name="location"
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
+          {/* Special Day */}
+          <div>
+            <label className="block font-semibold">Special Day</label>
+            <input
+              type="text"
+              name="specialDay"
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
 
-        {/* Date */}
-        <div>
-          <label className="block font-semibold">Date</label>
-          <DatePicker
-            selected={formData.date}
-            // onSelect={handleDateSelect} //when day is clicked
-            onChange={handleChange} //only when value has changed
-          />
+          {/* Location */}
+          <div>
+            <label className="block font-semibold">Location</label>
+            <input
+              type="text"
+              name="location"
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
         </div>
 
         {/* Puja Details */}
@@ -312,7 +317,7 @@ const PujaForm = () => {
                     type="file"
                     name="packImg"
                     accept="image/*"
-                    onChange={(e) => handleChange(e, index)} // ✅ index now works
+                    onChange={(e) => handleChange(e, index)}
                     className="w-32 h-32 border rounded flex items-center justify-center text-sm p-2"
                   />
                 )}
@@ -640,8 +645,6 @@ const PujaForm = () => {
             </button>
           </div>
         </div>
-
-
 
         {/* Submit */}
         <button

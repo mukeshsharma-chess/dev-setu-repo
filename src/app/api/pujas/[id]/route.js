@@ -24,7 +24,6 @@ export async function GET(req, { params }) {
 //
 // ✅ PUT /api/pujas/:id
 //
-import { NextResponse } from "next/server";
 import { chadhava, chadhavaPackages, chadhavaBanners, recommendedChadawas, chadhavaFaqs, pujaPerformed } from "@/models"; 
 
 export async function PUT(req, context) {

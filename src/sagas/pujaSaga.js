@@ -104,7 +104,7 @@ export function* updatePujaSaga({ payload, resolve }) {
     }
 }
 
-export function* updatePujaSaga({ payload, resolve }) {
+export function* deletePujaSaga({ payload, resolve }) {
     try {
         yield put({ type: START_LOADING, isLoading: true })
         let response = yield api.DeletePuja(payload);

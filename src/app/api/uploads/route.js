@@ -10,7 +10,6 @@ export const config = {
   },
 };
 
-// Convert Next.js Request → Node.js IncomingMessage-like object
 async function toNodeRequest(req) {
   const arrayBuffer = await req.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
@@ -19,7 +18,6 @@ async function toNodeRequest(req) {
   stream.push(buffer);
   stream.push(null);
 
-  // Simulate Node.js IncomingMessage
   stream.headers = Object.fromEntries(req.headers.entries());
   stream.method = req.method;
   stream.url = req.url;
@@ -29,14 +27,14 @@ async function toNodeRequest(req) {
 
 export async function POST(req) {
   try {
-    const uploadDir = path.join(process.cwd(), "uploads");
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
 
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
     const form = formidable({
-      multiples: true, // allow multiple file uploads
+      multiples: true,
       uploadDir,
       keepExtensions: true,
     });
@@ -50,11 +48,10 @@ export async function POST(req) {
       });
     });
 
-    // Handle single or multiple files
     let uploaded = [];
     if (files.file) {
       if (Array.isArray(files.file)) {
-        uploaded = files.file.map((f) => `/public/uploads/${f.newFilename}`);
+        uploaded = files.file.map((f) => `/uploads/${f.newFilename}`);
       } else {
         uploaded = [`/uploads/${files.file.newFilename}`];
       }
