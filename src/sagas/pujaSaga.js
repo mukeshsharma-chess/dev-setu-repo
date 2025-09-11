@@ -11,6 +11,7 @@ export function* fetchAllPujaSaga({ payload, resolve }) {
         yield put({ type: START_LOADING, isLoading: true })
         let response = yield api.GetAllPuja(payload);
 
+        console.log("fetchAllPujaSaga", response)
         const {data, status} = response;
 
         if (status === 200) {

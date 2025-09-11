@@ -14,16 +14,16 @@ export default class fetchApi extends Api {
         let url = this.buildUrl(endpoints.Pujas.puja, "full")
         return this.fetch(url, "GET", null, data).then(response => response)
     }
-    
+
     GetPujaDetails(data) {
         let url = this.buildUrl(endpoints.Pujas.puja, "full")
-        return this.fetch(url, "GET", JSON.stringify(data)).then(response => response)
+        return this.fetchParams(url, "GET", null, `/${data}`).then(response => response)
     }
 
     UpdetePuja(data) {
         let url = this.buildUrl(endpoints.Pujas.puja, "full")
-        if (data.slug) {
-            return this.fetchParams(url, "PUT", null, `/${data.slug}`).then(response => response)
+        if (data.id) {
+            return this.fetchParams(url, "PUT", JSON.stringify(data), `/${data.id}`).then(response => response)
         }
     }
 

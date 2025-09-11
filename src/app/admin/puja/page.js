@@ -23,7 +23,7 @@ const PujaForm = () => {
     packages: [{ packImg: null, packageType: "", packagePrice: "" }],
     offerings: { offerimg: [null], offers: [{ title: "", description: "" }] },
     faqs: [{ icon: null, title: "", description: "" }],
-    images: [null],
+    images: [],
   });
 
   const baseAPIURL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -152,7 +152,6 @@ const PujaForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("handleSubmit", formData)
     fetchWithWait({ dispatch, action: addNewPujaDataAction(formData) }).then((res) => {
       console.log("Response:", res);
       if (res.status === 200) {

@@ -9,9 +9,9 @@ const { pujas, pujaPackages, pujaOfferings, pujaFaqs, pujaImages } = models;
 export async function GET() {
   try {
     const allPujas = await pujas.findAll({
-      include: [puja_packages, puja_offerings, puja_faqs, puja_images],
+      include: [ pujaPackages, pujaOfferings, pujaFaqs, pujaImages ],
     });
-    return NextResponse.json(allPujas, { status: 200 });
+    return NextResponse.json({data: allPujas,  status: 200 });
   } catch (error) {
     console.error("GET Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -44,6 +44,7 @@ export async function POST(req) {
           packageType: pkg.packageType,
           packagePrice: parseFloat(pkg.packagePrice) // Ensure price is a float
         })),
+
         pujaOfferings: body.offerings.offers.map(o => ({
           // Map each individual offering from 'offers' array
           title: o.title,

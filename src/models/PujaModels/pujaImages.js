@@ -1,4 +1,4 @@
-// src/models/puja_images.js
+// src/models/pujaImages.js
 export default (sequelize, DataTypes) => {
   const pujaImages = sequelize.define("pujaImages", {
     id: {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import models from "@/models/index.js";
 
-const { pujas, puja_packages, puja_offerings, puja_faqs, puja_images } = models;
+const { pujas, pujaPackages, pujaOfferings, pujaFaqs, pujaImages } = models;
 
 //
 // ✅ GET /api/pujas/:id
@@ -9,12 +9,12 @@ const { pujas, puja_packages, puja_offerings, puja_faqs, puja_images } = models;
 export async function GET(req, { params }) {
   try {
     const puja = await pujas.findByPk(params.id, {
-      include: [puja_packages, puja_offerings, puja_faqs, puja_images],
+      include: [pujaPackages, pujaOfferings, pujaFaqs, pujaImages],
     });
     if (!puja) {
       return NextResponse.json({ error: "Puja not found" }, { status: 404 });
     }
-    return NextResponse.json(puja, { status: 200 });
+    return NextResponse.json({ data: puja, status: 200 });
   } catch (error) {
     console.error("GET by ID Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -23,22 +23,23 @@ export async function GET(req, { params }) {
 
 //
 // ✅ PUT /api/pujas/:id
-//
-import { chadhava, chadhavaPackages, chadhavaBanners, recommendedChadawas, chadhavaFaqs, pujaPerformed } from "@/models"; 
-
 export async function PUT(req, context) {
+
+
   try {
     const body = await req.json();
     const { params } = context;
 
-    const updatedChadhava = await chadhava.findByPk(params.id);
+    const pujaOfferingImages = body.offerings.offerimg || [];
 
-    if (!updatedChadhava) {
-      return NextResponse.json({ error: "Chadhava not found" }, { status: 404 });
+    const updatedPujas = await pujas.findByPk(params.id);
+
+    if (!updatedPujas) {
+      return NextResponse.json({ error: "Puja not found" }, { status: 404 });
     }
 
     // ✅ Update main table
-    await updatedChadhava.update({
+    await updatedPujas.update({
       title: body.title,
       slug: body.slug,
       ratingValue: body.ratingValue,
@@ -52,74 +53,73 @@ export async function PUT(req, context) {
 
     // ✅ Update banners
     if (body.images) {
-      await chadhavaBanners.destroy({ where: { chadhavaId: updatedChadhava.id } });
-      await chadhavaBanners.bulkCreate(
+      await pujaImages.destroy({ where: { pujaId: updatedPujas.id } });
+      await pujaImages.bulkCreate(
         body.images.map((img) => ({
           image_url: img,
-          chadhavaId: updatedChadhava.id,
+          pujaId: updatedPujas.id,
         }))
       );
     }
 
-    // ✅ Update packages
-    if (body.packages) {
-      await chadhavaPackages.destroy({ where: { chadhavaId: updatedChadhava.id } });
-      await chadhavaPackages.bulkCreate(
-        body.packages.map((p) => ({
-          ...p,
-          chadhavaId: updatedChadhava.id,
+if (body.images) {
+  await pujaImages.destroy({ where: { pujaId: updatedPujas.id } });
+  await pujaImages.bulkCreate(
+    body.images.map((img) => ({
+      imageUrl: img,   // ✅ Use model key, not db field
+      pujaId: updatedPujas.id,
+    }))
+  );
+}
+
+
+    // ✅ Update offerings (offers + offerimg)
+    if (body.offerings && (body.offerings.offers || body.offerings.offerimg)) {
+      await pujaOfferings.destroy({ where: { pujaId: updatedPujas.id } });
+
+      // combine offers array with offerimg array
+      const offersArray = body.offerings.offers || [];
+
+      await pujaOfferings.bulkCreate(
+        offersArray.map((r) => ({
+          offerimg: body.offerings.offerimg || [], // array will be stored as JSON
+          title: r.title,
+          description: r.description,
+          pujaId: updatedPujas.id,
         }))
       );
     }
 
-    // ✅ Update recommended chadhawas
-    if (body.recommendedChadawa) {
-      await recommendedChadawas.destroy({ where: { chadhavaId: updatedChadhava.id } });
-      await recommendedChadawas.bulkCreate(
-        body.recommendedChadawa.map((r) => ({
-          ...r,
-          chadhavaId: updatedChadhava.id,
-        }))
-      );
-    }
 
     // ✅ Update FAQs
     if (body.faqs) {
-      await chadhavaFaqs.destroy({ where: { chadhavaId: updatedChadhava.id } });
-      await chadhavaFaqs.bulkCreate(
+      await pujaFaqs.destroy({ where: { pujaId: updatedPujas.id } });
+      await pujaFaqs.bulkCreate(
         body.faqs.map((f) => ({
           icon: f.icon,
           question: f.title,
           answer: f.description,
-          chadhavaId: updatedChadhava.id,
+          pujaId: updatedPujas.id,
         }))
       );
     }
 
-    // ✅ Update Puja Performed By (assuming only one)
-    if (body.pujaPerformedBy) {
-      await pujaPerformed.destroy({ where: { chadhavaId: updatedChadhava.id } });
-      await pujaPerformed.create({
-        ...body.pujaPerformedBy,
-        chadhavaId: updatedChadhava.id,
-      });
-    }
-
     // ✅ Fetch back with associations
-    const finalData = await chadhava.findByPk(updatedChadhava.id, {
-      include: [chadhavaBanners, chadhavaPackages, recommendedChadawas, chadhavaFaqs, pujaPerformed],
+    const finalData = await pujas.findByPk(updatedPujas.id, {
+      include: [pujaPackages, pujaOfferings, pujaFaqs, pujaImages],
     });
 
     return NextResponse.json({
       data: finalData,
       status: 200,
-      message: "Chadhava updated successfully",
+      message: "Puja updated successfully",
     });
   } catch (error) {
     console.error("PUT Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
 
 
 //
@@ -133,7 +133,7 @@ export async function DELETE(req, { params }) {
     }
 
     await puja.destroy();
-    return NextResponse.json({ message: "Puja deleted successfully" });
+    return NextResponse.json({ status: 200, message: "Puja deleted successfully" });
   } catch (error) {
     console.error("DELETE Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

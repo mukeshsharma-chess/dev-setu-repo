@@ -1,11 +1,16 @@
 // src/models/puja_packages.js
 export default (sequelize, DataTypes) => {
-  const PujaPackage = sequelize.define("pujapackages", {
+  const pujaPackages = sequelize.define("pujaPackages", {
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
       field: "id",
+    },
+    packImg: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: "packImg",
     },
     packageType: {
       type: DataTypes.STRING,
@@ -34,9 +39,9 @@ export default (sequelize, DataTypes) => {
     tableName: "puja_packages",
   });
 
-  PujaPackage.associate = (models) => {
-    PujaPackage.belongsTo(models.pujas, { foreignKey: "pujaId" });
+  pujaPackages.associate = (models) => {
+    pujaPackages.belongsTo(models.pujas, { foreignKey: "pujaId" });
   };
 
-  return PujaPackage;
+  return pujaPackages;
 };

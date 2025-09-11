@@ -39,7 +39,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                href="/admin/puja-list"
+                href="/admin/puja/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
                 <List size={18} />
@@ -57,7 +57,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                href="/admin/chadhava-list"
+                href="/admin/chadhava/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
                 <List size={18} />
