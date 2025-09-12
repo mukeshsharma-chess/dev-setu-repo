@@ -34,4 +34,33 @@ export default class fetchApi extends Api {
         }
     }
 
+    AddNewChadhava(data) {
+        let url = this.buildUrl(endpoints.Chadhava.chadhava, "full")
+        return this.fetchNormal(url, "POST", JSON.stringify(data)).then(response => response)
+    }
+
+    GetAllChadhava(data) {
+        let url = this.buildUrl(endpoints.Chadhava.chadhava, "full")
+        return this.fetch(url, "GET", null, data).then(response => response)
+    }
+
+    GetChadhavaDetails(data) {
+        let url = this.buildUrl(endpoints.Chadhava.chadhava, "full")
+        return this.fetchParams(url, "GET", null, `/${data}`).then(response => response)
+    }
+
+    UpdeteChadhava(data) {
+        let url = this.buildUrl(endpoints.Chadhava.chadhava, "full")
+        if (data.id) {
+            return this.fetchParams(url, "PUT", JSON.stringify(data), `/${data.id}`).then(response => response)
+        }
+    }
+
+    DeleteChadhava(data) {
+        let url = this.buildUrl(endpoints.Chadhava.chadhava, "full")
+        if (data.id) {
+            return this.fetchParams(url, "DELETE", null, `/${data.id}`).then(response => response)
+        }
+    }
+
 }

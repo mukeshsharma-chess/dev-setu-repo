@@ -1,6 +1,5 @@
 'use client'
 
-
 import { createStore, applyMiddleware, compose } from "redux";
 import reducers from "./reducers";
 import createSagaMiddleware from "redux-saga";
@@ -19,8 +18,6 @@ const store = createStore(reducers, {}, compose(...enhancers));
 sagaMiddleware.run(rootSaga);
 
 store.asyncReducers = {};
-
-// export { store };
 
 export function ReduxProvider({ children }) {
   return <Provider store={store}>{children}</Provider>;

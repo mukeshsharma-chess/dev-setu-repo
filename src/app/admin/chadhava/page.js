@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
-import { fetchWithWait } from "@/helper/method";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
-import { addNewChadhavaAction, requestChadhavaDataAction } from "@/redux/actions/chadhavasAction ";
+import { fetchWithWait } from "../../../../helper/method";
+import { addNewChadhavaAction, requestChadhavaAction } from "@/redux/actions/chadhavaAction";
 
 const ChadhavaForm = () => {
 
@@ -98,7 +98,7 @@ const ChadhavaForm = () => {
       uploadFormData.append("file", file);
 
       try {
-        const res = await fetch(`${baseAPIURL}/upload`, {
+        const res = await fetch(`${baseAPIURL}/uploads`, {
           method: "POST",
           body: uploadFormData,
         });
@@ -119,7 +119,7 @@ const ChadhavaForm = () => {
               updated[index].recommendedImg = (data.storedAs).toString(); // server path
               return { ...prev, recommendedChadawa: updated };
             });
-          }else if (name === "icon") {
+          } else if (name === "icon") {
             console.log("added faqs icons", data)
             setFormData((prev) => {
               const updated = [...prev.faqs];
@@ -189,11 +189,11 @@ const ChadhavaForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitting form data===:", formData);
+    // console.log("Submitting form data===:", formData);
     fetchWithWait({ dispatch, action: addNewChadhavaAction(formData) }).then((res) => {
       console.log("Response:", res);
-      if (res.status === 201) {
-        dispatch(requestChadhavaDataAction()); // Fetch updated puja data
+      if (res.status === 200) {
+        dispatch(requestChadhavaAction()); // Fetch updated puja data
       } else {
         console.log("Error:", res.error);
         alert(res.error)
@@ -204,567 +204,569 @@ const ChadhavaForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mx-auto shadow-md rounded-lg p-6 space-y-6 overflow-y-auto max-h-screen"
-    >
-      {/* <h1 className="text-2xl font-bold">Puja Form</h1> */}
+    <div className="flex-1 p-6 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto shadow-md rounded-lg max-h-screen"
+      >
+        {/* <h1 className="text-2xl font-bold">Puja Form</h1> */}
 
-      {/* Title */}
-      <div>
-        <label className="block font-semibold">Title</label>
-        <input
-          type="text"
-          name="title"
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-      </div>
+        {/* Title */}
+        <div>
+          <label className="block font-semibold">Title</label>
+          <input
+            type="text"
+            name="title"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
 
-      <div>
-        <label className="block font-semibold">Slug</label>
-        <input
-          type="text"
-          name="slug"
-          value={formData?.slug}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-      </div>
+        <div>
+          <label className="block font-semibold">Slug</label>
+          <input
+            type="text"
+            name="slug"
+            value={formData?.slug}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
 
-      {/* Images (File Upload) */}
-      <div>
-        <label className="block font-semibold mb-2">Banners</label>
+        {/* Images (File Upload) */}
+        <div>
+          <label className="block font-semibold mb-2">Banners</label>
 
-        <div className="flex flex-wrap gap-4">
-          {formData?.images.map((img, index) => (
-            <div key={index} className="relative">
-              {img ? (
-                <div>
-                  <img
-                    src={img}
-                    alt={`Uploaded ${index}`}
-                    className="w-32 h-32 object-cover rounded border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = formData?.images.filter((_, i) => i !== index);
-                      setFormData({ ...formData, images: updated });
-                    }}
-                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 cursor-pointer"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ) : (
-                <>
+          <div className="flex flex-wrap gap-4">
+            {formData?.images.map((img, index) => (
+              <div key={index} className="relative">
+                {img ? (
+                  <div>
+                    <img
+                      src={img}
+                      alt={`Uploaded ${index}`}
+                      className="w-32 h-32 object-cover rounded border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = formData?.images.filter((_, i) => i !== index);
+                        setFormData({ ...formData, images: updated });
+                      }}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 cursor-pointer"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <input
+                      type="file"
+                      name="image"
+                      accept="image/*"
+                      onChange={(e) => handleChange(e, index)}
+                      className="w-32 h-32 border rounded flex items-center justify-center text-sm p-2"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = formData?.images.filter((_, i) => i !== index);
+                        setFormData({ ...formData, images: updated });
+                      }}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 cursor-pointer"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </>
+                )}
+              </div>
+            ))}
+
+            {/* Add Image Button */}
+            <button
+              type="button"
+              onClick={() =>
+                setFormData({
+                  ...formData,
+                  images: [...formData?.images, null],
+                })
+              }
+              className="w-32 h-32 border-2 border-dashed border-green-500 flex items-center justify-center rounded text-green-600 hover:bg-green-50 cursor-pointer"
+            >
+              + Add Banner
+            </button>
+          </div>
+        </div>
+
+        {/* Rating */}
+        <div className="grid grid-cols-3 gap-3">
+
+          {/* Date */}
+          <div>
+            <label className="block font-semibold">Date</label>
+            <DatePicker
+              selected={formData.date}
+              onChange={(date) => setFormData({ ...formData, date })}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold">Rating Value</label>
+            <input
+              type="number"
+              step="0.1"
+              name="ratingValue"
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold">Rating Reviews</label>
+            <input
+              type="number"
+              name="ratingReviews"
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
+        </div>
+
+        {/* Special Day */}
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="block font-semibold">Special Day</label>
+            <input
+              type="text"
+              name="specialDay"
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
+          {/* Location */}
+          <div>
+            <label className="block font-semibold">Location</label>
+            <input
+              type="text"
+              name="location"
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
+        </div>
+
+
+        {/* Puja Details */}
+        <div>
+          <label className="block font-semibold">Puja Details</label>
+          <textarea
+            name="pujaDetails"
+            rows="4"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
+        {/* Temple History */}
+        <div>
+          <label className="block font-semibold">Temple History</label>
+          <textarea
+            name="templeHistory"
+            rows="3"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
+        {/* Packages */}
+        <div>
+          <label className="block font-semibold">Package</label>
+          {formData?.packages.map((item, index) => (
+            <div key={index} className="border p-3 rounded mb-3 relative">
+              {formData?.packages.length > 1 && <button
+                type="button"
+                onClick={() => {
+                  const updated = formData?.packages.filter((_, i) => i !== index);
+                  setFormData({ ...formData, packages: updated });
+                }}
+                className="absolute top-2 right-2 text-red-600 hover:text-red-800"
+              >
+                <Trash2 size={18} />
+              </button>}
+
+              <div className="mb-3">
+                <label className="block font-medium">Package Image</label>
+                {item.packImg ? (
+                  <div className="relative w-15 h-15">
+                    <img
+                      src={item.packImg}
+                      alt={`Package image ${index}`}
+                      className="w-15 h-15 object-cover rounded border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...formData?.packages];
+                        updated[index].packImg = null;
+                        setFormData({ ...formData, packages: updated });
+                      }}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ) : (
                   <input
                     type="file"
-                    name="image"
+                    name="packImg"
                     accept="image/*"
-                    onChange={(e) => handleChange(e, index)}
-                    className="w-32 h-32 border rounded flex items-center justify-center text-sm p-2"
+                    onChange={(e) => handleChange(e, index)} // ✅ index now works
+                    className="w-15 h-15 border rounded flex items-center justify-center text-sm p-2"
                   />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = formData?.images.filter((_, i) => i !== index);
-                      setFormData({ ...formData, images: updated });
-                    }}
-                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 cursor-pointer"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </>
-              )}
+                )}
+              </div>
+
+              <input
+                type="text"
+                placeholder="Title"
+                value={item.title}
+                onChange={(e) => {
+                  const updated = [...formData?.packages];
+                  updated[index].title = e.target.value;
+                  setFormData({ ...formData, packages: updated });
+                }}
+                className="w-full border p-2 rounded mb-2"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="number"
+                  placeholder="price"
+                  value={item.price}
+                  onChange={(e) => {
+                    const updated = [...formData?.packages];
+                    updated[index].price = e.target.value;
+                    setFormData({ ...formData, packages: updated });
+                  }}
+                  className="w-full border p-2 rounded mb-2"
+                />
+                <input
+                  type="text"
+                  placeholder="tags"
+                  value={item.tags}
+                  onChange={(e) => {
+                    const updated = [...formData?.packages];
+                    updated[index].tags = e.target.value;
+                    setFormData({ ...formData, packages: updated });
+                  }}
+                  className="w-full border p-2 rounded mb-2"
+                />
+              </div>
+              <textarea
+                placeholder="Description"
+                value={item.description}
+                onChange={(e) => {
+                  const updated = [...formData?.packages];
+                  updated[index].description = e.target.value;
+                  setFormData({ ...formData, packages: updated });
+                }}
+                className="w-full border p-2 rounded"
+              />
+
             </div>
           ))}
-
-          {/* Add Image Button */}
           <button
             type="button"
             onClick={() =>
               setFormData({
                 ...formData,
-                images: [...formData?.images, null],
+                packages: [...formData?.packages, { packImg: "", title: "", description: "", price: "", currency: "INR", tags: "" }],
               })
             }
-            className="w-32 h-32 border-2 border-dashed border-green-500 flex items-center justify-center rounded text-green-600 hover:bg-green-50 cursor-pointer"
+            className="bg-green-500 text-white px-4 py-1 rounded"
           >
-            + Add Banner
+            + Add Packages
           </button>
         </div>
-      </div>
 
-      {/* Rating */}
-      <div className="grid grid-cols-3 gap-3">
 
-        {/* Date */}
+        {/* Recommended Chadawa */}
         <div>
-          <label className="block font-semibold">Date</label>
-          <DatePicker
-            selected={formData.date}
-            onChange={(date) => setFormData({ ...formData, date })}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold">Rating Value</label>
-          <input
-            type="number"
-            step="0.1"
-            name="ratingValue"
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-        <div>
-          <label className="block font-semibold">Rating Reviews</label>
-          <input
-            type="number"
-            name="ratingReviews"
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-      </div>
-
-      {/* Special Day */}
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="block font-semibold">Special Day</label>
-          <input
-            type="text"
-            name="specialDay"
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        {/* Location */}
-        <div>
-          <label className="block font-semibold">Location</label>
-          <input
-            type="text"
-            name="location"
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-      </div>
-
-
-      {/* Puja Details */}
-      <div>
-        <label className="block font-semibold">Puja Details</label>
-        <textarea
-          name="pujaDetails"
-          rows="4"
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-      </div>
-
-      {/* Temple History */}
-      <div>
-        <label className="block font-semibold">Temple History</label>
-        <textarea
-          name="templeHistory"
-          rows="3"
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-      </div>
-
-      {/* Packages */}
-      <div>
-        <label className="block font-semibold">Package</label>
-        {formData?.packages.map((item, index) => (
-          <div key={index} className="border p-3 rounded mb-3 relative">
-            {formData?.packages.length > 1 && <button
-              type="button"
-              onClick={() => {
-                const updated = formData?.packages.filter((_, i) => i !== index);
-                setFormData({ ...formData, packages: updated });
-              }}
-              className="absolute top-2 right-2 text-red-600 hover:text-red-800"
-            >
-              <Trash2 size={18} />
-            </button>}
-
-            <div className="mb-3">
-              <label className="block font-medium">Package Image</label>
-              {item.packImg ? (
-                <div className="relative w-15 h-15">
-                  <img
-                    src={item.packImg}
-                    alt={`Package image ${index}`}
-                    className="w-15 h-15 object-cover rounded border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = [...formData?.packages];
-                      updated[index].packImg = null;
-                      setFormData({ ...formData, packages: updated });
-                    }}
-                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ) : (
-                <input
-                  type="file"
-                  name="packImg"
-                  accept="image/*"
-                  onChange={(e) => handleChange(e, index)} // ✅ index now works
-                  className="w-15 h-15 border rounded flex items-center justify-center text-sm p-2"
-                />
-              )}
-            </div>
-
-            <input
-              type="text"
-              placeholder="Title"
-              value={item.title}
-              onChange={(e) => {
-                const updated = [...formData?.packages];
-                updated[index].title = e.target.value;
-                setFormData({ ...formData, packages: updated });
-              }}
-              className="w-full border p-2 rounded mb-2"
-            />
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                type="number"
-                placeholder="price"
-                value={item.price}
-                onChange={(e) => {
-                  const updated = [...formData?.packages];
-                  updated[index].price = e.target.value;
-                  setFormData({ ...formData, packages: updated });
+          <label className="block font-semibold">Recommended Chadawa</label>
+          {formData?.recommendedChadawa.map((item, index) => (
+            <div key={index} className="border p-3 rounded mb-3 relative">
+              {formData?.recommendedChadawa.length > 1 && <button
+                type="button"
+                onClick={() => {
+                  const updated = formData?.recommendedChadawa.filter((_, i) => i !== index);
+                  setFormData({ ...formData, recommendedChadawa: updated });
                 }}
-                className="w-full border p-2 rounded mb-2"
-              />
+                className="absolute top-2 right-2 text-red-600 hover:text-red-800"
+              >
+                <Trash2 size={18} />
+              </button>}
+
+              <div className="mb-3">
+                <label className="block font-medium">Image</label>
+                {item.recommendedImg ? (
+                  <div className="relative w-15 h-15">
+                    <img
+                      src={item.recommendedImg}
+                      alt={`Package image ${index}`}
+                      className="w-15 h-15 object-cover rounded border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...formData?.recommendedChadawa];
+                        updated[index].recommendedImg = null;
+                        setFormData({ ...formData, recommendedChadawa: updated });
+                      }}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    type="file"
+                    name="recommendedImg"
+                    accept="image/*"
+                    onChange={(e) => handleChange(e, index)} // ✅ index now works
+                    className="w-15 h-15 border rounded flex items-center justify-center text-sm p-2"
+                  />
+                )}
+              </div>
+
               <input
                 type="text"
-                placeholder="tags"
-                value={item.tags}
-                onChange={(e) => {
-                  const updated = [...formData?.packages];
-                  updated[index].tags = e.target.value;
-                  setFormData({ ...formData, packages: updated });
-                }}
-                className="w-full border p-2 rounded mb-2"
-              />
-            </div>
-            <textarea
-              placeholder="Description"
-              value={item.description}
-              onChange={(e) => {
-                const updated = [...formData?.packages];
-                updated[index].description = e.target.value;
-                setFormData({ ...formData, packages: updated });
-              }}
-              className="w-full border p-2 rounded"
-            />
-
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() =>
-            setFormData({
-              ...formData,
-              packages: [...formData?.packages, { packImg: "", title: "", description: "", price: "", currency: "INR", tags: "" }],
-            })
-          }
-          className="bg-green-500 text-white px-4 py-1 rounded"
-        >
-          + Add Packages
-        </button>
-      </div>
-
-
-      {/* Recommended Chadawa */}
-      <div>
-        <label className="block font-semibold">Recommended Chadawa</label>
-        {formData?.recommendedChadawa.map((item, index) => (
-          <div key={index} className="border p-3 rounded mb-3 relative">
-            {formData?.recommendedChadawa.length > 1 && <button
-              type="button"
-              onClick={() => {
-                const updated = formData?.recommendedChadawa.filter((_, i) => i !== index);
-                setFormData({ ...formData, recommendedChadawa: updated });
-              }}
-              className="absolute top-2 right-2 text-red-600 hover:text-red-800"
-            >
-              <Trash2 size={18} />
-            </button>}
-
-            <div className="mb-3">
-              <label className="block font-medium">Image</label>
-              {item.recommendedImg ? (
-                <div className="relative w-15 h-15">
-                  <img
-                    src={item.recommendedImg}
-                    alt={`Package image ${index}`}
-                    className="w-15 h-15 object-cover rounded border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = [...formData?.recommendedChadawa];
-                      updated[index].recommendedImg = null;
-                      setFormData({ ...formData, recommendedChadawa: updated });
-                    }}
-                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ) : (
-                <input
-                  type="file"
-                  name="recommendedImg"
-                  accept="image/*"
-                  onChange={(e) => handleChange(e, index)} // ✅ index now works
-                  className="w-15 h-15 border rounded flex items-center justify-center text-sm p-2"
-                />
-              )}
-            </div>
-
-            <input
-              type="text"
-              placeholder="Title"
-              value={item.title}
-              onChange={(e) => {
-                const updated = [...formData?.recommendedChadawa];
-                updated[index].title = e.target.value;
-                setFormData({ ...formData, recommendedChadawa: updated });
-              }}
-              className="w-full border p-2 rounded mb-2"
-            />
-            <div className="grid grid-cols-4 gap-2">
-              <input
-                type="text"
-                placeholder="status"
-                value={item.status}
+                placeholder="Title"
+                value={item.title}
                 onChange={(e) => {
                   const updated = [...formData?.recommendedChadawa];
-                  updated[index].status = e.target.value;
+                  updated[index].title = e.target.value;
                   setFormData({ ...formData, recommendedChadawa: updated });
                 }}
                 className="w-full border p-2 rounded mb-2"
               />
+              <div className="grid grid-cols-4 gap-2">
+                <input
+                  type="text"
+                  placeholder="status"
+                  value={item.status}
+                  onChange={(e) => {
+                    const updated = [...formData?.recommendedChadawa];
+                    updated[index].status = e.target.value;
+                    setFormData({ ...formData, recommendedChadawa: updated });
+                  }}
+                  className="w-full border p-2 rounded mb-2"
+                />
+                <input
+                  type="text"
+                  placeholder="location"
+                  value={item.location}
+                  onChange={(e) => {
+                    const updated = [...formData?.recommendedChadawa];
+                    updated[index].location = e.target.value;
+                    setFormData({ ...formData, recommendedChadawa: updated });
+                  }}
+                  className="w-full border p-2 rounded mb-2"
+                />
+                <DatePicker
+                  selected={item.date}
+                  onChange={(date) => setFormData({ ...formData.recommendedChadawa, date })}
+                  className="w-full border p-2 rounded"
+                />
+                <input
+                  type="number"
+                  placeholder="price"
+                  value={item.price}
+                  onChange={(e) => {
+                    const updated = [...formData?.recommendedChadawa];
+                    updated[index].price = e.target.value;
+                    setFormData({ ...formData, recommendedChadawa: updated });
+                  }}
+                  className="w-full border p-2 rounded mb-2"
+                />
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              setFormData({
+                ...formData,
+                recommendedChadawa: [...formData?.recommendedChadawa, { recommendedImg: "", status: "", title: "", location: "", date: new Date(), price: "", currency: "INR" }],
+              })
+            }
+            className="bg-green-500 text-white px-4 py-1 rounded"
+          >
+            + Add Packages
+          </button>
+        </div>
+
+
+
+        {/* FAQs */}
+
+        <div>
+          <label className="block font-semibold">FAQs</label>
+          {formData?.faqs.map((faq, index) => (
+            <div key={index} className="border p-3 rounded mb-3 relative">
+              {formData?.faqs.length > 1 && <button
+                type="button"
+                onClick={() => {
+                  const updated = formData?.faqs.filter((_, i) => i !== index);
+                  setFormData({ ...formData, faqs: updated });
+                }}
+                className="absolute top-2 right-2 text-red-600 hover:text-red-800"
+              >
+                <Trash2 size={18} />
+              </button>}
+
+              <div className="mb-3">
+                <label className="block font-medium">FAQ Icon</label>
+                {faq.icon ? (
+                  <div className="relative w-15 h-15">
+                    <img
+                      src={faq.icon}
+                      alt={`FAQ Icon ${index}`}
+                      className="w-15 h-15 object-cover rounded border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...formData?.faqs];
+                        updated[index].icon = null;
+                        setFormData({ ...formData, faqs: updated });
+                      }}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    type="file"
+                    name="icon"
+                    accept="image/*"
+                    onChange={(e) => handleChange(e, index)} // ✅ index now works
+                    className="w-15 h-15 border rounded flex items-center justify-center text-sm p-2"
+                  />
+                )}
+              </div>
+
               <input
                 type="text"
-                placeholder="location"
-                value={item.location}
+                placeholder="Title"
+                value={faq.title}
                 onChange={(e) => {
-                  const updated = [...formData?.recommendedChadawa];
-                  updated[index].location = e.target.value;
-                  setFormData({ ...formData, recommendedChadawa: updated });
+                  const updated = [...formData?.faqs];
+                  updated[index].title = e.target.value;
+                  setFormData({ ...formData, faqs: updated });
                 }}
                 className="w-full border p-2 rounded mb-2"
               />
-              <DatePicker
-                selected={item.date}
-                onChange={(date) => setFormData({ ...formData.recommendedChadawa, date })}
+              <textarea
+                placeholder="Description"
+                value={faq.description}
+                onChange={(e) => {
+                  const updated = [...formData?.faqs];
+                  updated[index].description = e.target.value;
+                  setFormData({ ...formData, faqs: updated });
+                }}
                 className="w-full border p-2 rounded"
               />
-              <input
-                type="number"
-                placeholder="price"
-                value={item.price}
-                onChange={(e) => {
-                  const updated = [...formData?.recommendedChadawa];
-                  updated[index].price = e.target.value;
-                  setFormData({ ...formData, recommendedChadawa: updated });
-                }}
-                className="w-full border p-2 rounded mb-2"
-              />
             </div>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() =>
-            setFormData({
-              ...formData,
-              recommendedChadawa: [...formData?.recommendedChadawa, { recommendedImg: "", status: "", title: "", location: "", date: new Date(), price: "", currency: "INR" }],
-            })
-          }
-          className="bg-green-500 text-white px-4 py-1 rounded"
-        >
-          + Add Packages
-        </button>
-      </div>
-
-
-
-      {/* FAQs */}
-
-      <div>
-        <label className="block font-semibold">FAQs</label>
-        {formData?.faqs.map((faq, index) => (
-          <div key={index} className="border p-3 rounded mb-3 relative">
-            {formData?.faqs.length > 1 && <button
-              type="button"
-              onClick={() => {
-                const updated = formData?.faqs.filter((_, i) => i !== index);
-                setFormData({ ...formData, faqs: updated });
-              }}
-              className="absolute top-2 right-2 text-red-600 hover:text-red-800"
-            >
-              <Trash2 size={18} />
-            </button>}
-
-            <div className="mb-3">
-              <label className="block font-medium">FAQ Icon</label>
-              {faq.icon ? (
-                <div className="relative w-15 h-15">
-                  <img
-                    src={faq.icon}
-                    alt={`FAQ Icon ${index}`}
-                    className="w-15 h-15 object-cover rounded border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = [...formData?.faqs];
-                      updated[index].icon = null;
-                      setFormData({ ...formData, faqs: updated });
-                    }}
-                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ) : (
-                <input
-                  type="file"
-                  name="icon"
-                  accept="image/*"
-                  onChange={(e) => handleChange(e, index)} // ✅ index now works
-                  className="w-15 h-15 border rounded flex items-center justify-center text-sm p-2"
-                />
-              )}
-            </div>
-
-            <input
-              type="text"
-              placeholder="Title"
-              value={faq.title}
-              onChange={(e) => {
-                const updated = [...formData?.faqs];
-                updated[index].title = e.target.value;
-                setFormData({ ...formData, faqs: updated });
-              }}
-              className="w-full border p-2 rounded mb-2"
-            />
-            <textarea
-              placeholder="Description"
-              value={faq.description}
-              onChange={(e) => {
-                const updated = [...formData?.faqs];
-                updated[index].description = e.target.value;
-                setFormData({ ...formData, faqs: updated });
-              }}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() =>
-            setFormData({
-              ...formData,
-              faqs: [...formData?.faqs, { icon: "", title: "", description: "" }],
-            })
-          }
-          className="bg-green-500 text-white px-4 py-1 rounded"
-        >
-          + Add FAQ
-        </button>
-      </div>
-
-      <div>
-        <label className="block font-semibold">Puja Performed By</label>
-        <div className="mb-3">
-          <label className="block font-medium">Image</label>
-
-          {formData.pujaPerformedBy.pujaPerformerImg ? (
-            <div className="relative w-20 h-20">
-              <img
-                src={formData.pujaPerformedBy.pujaPerformerImg}
-                alt="Puja Performer"
-                className="w-20 h-20 object-cover rounded border"
-              />
-              <button
-                type="button"
-                onClick={() =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    pujaPerformedBy: { ...prev.pujaPerformedBy, pujaPerformerImg: "" },
-                  }))
-                }
-                className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
-          ) : (
-            <input
-              type="file"
-              name ={`pujaPerformerImg`}
-              accept="image/*"
-              onChange={handleChange}
-              className="w-20 h-20 border rounded flex items-center justify-center text-sm p-2"
-            />
-          )}
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              setFormData({
+                ...formData,
+                faqs: [...formData?.faqs, { icon: "", title: "", description: "" }],
+              })
+            }
+            className="bg-green-500 text-white px-4 py-1 rounded"
+          >
+            + Add FAQ
+          </button>
         </div>
 
-        <input
-          type="text"
-          name={`pujaPerformedBy.name`}
-          placeholder="name"
-          value={formData.pujaPerformedBy.name}
-          onChange={handleChange}
-          className="w-full border p-2 rounded mb-2"
-        />
-        <input
-          type="text"
-          name={`pujaPerformedBy.temple`}
-          placeholder="temple"
-          value={formData.pujaPerformedBy.temple}
-          onChange={handleChange}
-          className="w-full border p-2 rounded mb-2"
-        />
-        <input
-          type="text"
-          name={`pujaPerformedBy.bio`}
-          placeholder="bio"
-          value={formData.pujaPerformedBy.bio}
-          onChange={handleChange}
-          className="w-full border p-2 rounded mb-2"
-        />
-      </div>
+        <div>
+          <label className="block font-semibold">Puja Performed By</label>
+          <div className="mb-3">
+            <label className="block font-medium">Image</label>
+
+            {formData.pujaPerformedBy.pujaPerformerImg ? (
+              <div className="relative w-20 h-20">
+                <img
+                  src={formData.pujaPerformedBy.pujaPerformerImg}
+                  alt="Puja Performer"
+                  className="w-20 h-20 object-cover rounded border"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      pujaPerformedBy: { ...prev.pujaPerformedBy, pujaPerformerImg: "" },
+                    }))
+                  }
+                  className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ) : (
+              <input
+                type="file"
+                name={`pujaPerformerImg`}
+                accept="image/*"
+                onChange={handleChange}
+                className="w-20 h-20 border rounded flex items-center justify-center text-sm p-2"
+              />
+            )}
+          </div>
+
+          <input
+            type="text"
+            name={`pujaPerformedBy.name`}
+            placeholder="name"
+            value={formData.pujaPerformedBy.name}
+            onChange={handleChange}
+            className="w-full border p-2 rounded mb-2"
+          />
+          <input
+            type="text"
+            name={`pujaPerformedBy.temple`}
+            placeholder="temple"
+            value={formData.pujaPerformedBy.temple}
+            onChange={handleChange}
+            className="w-full border p-2 rounded mb-2"
+          />
+          <input
+            type="text"
+            name={`pujaPerformedBy.bio`}
+            placeholder="bio"
+            value={formData.pujaPerformedBy.bio}
+            onChange={handleChange}
+            className="w-full border p-2 rounded mb-2"
+          />
+        </div>
 
 
-      {/* Submit */}
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-      >
-        Submit
-      </button>
-    </form>
+        {/* Submit */}
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
   );
 };
 
