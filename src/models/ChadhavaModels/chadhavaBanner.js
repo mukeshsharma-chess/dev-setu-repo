@@ -8,7 +8,8 @@ export default (sequelize, DataTypes) => {
     },
     image_url: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+      field: "image_url",
     },
     chadhavaId: {
       type: DataTypes.BIGINT,

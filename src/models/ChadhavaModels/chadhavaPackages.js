@@ -19,7 +19,7 @@ export default (sequelize, DataTypes) => {
     },
     packImg: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       field: "packImg",
     },
     currency: {

@@ -1,10 +1,10 @@
 "use client";
 
-import { deletePujaAction, requestPujaDataAction } from "@/redux/actions/pujaActions";
+import { deleteChadhavaAction, requestChadhavaAction } from "@/redux/actions/chadhavaAction";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchWithWait } from "../../../../../helper/method";
 import { useRouter } from "next/navigation";
+import { fetchWithWait } from "../../../../../helper/method";
 
 export default function PujasPage() {
   const [packages, setPackages] = useState(null);
@@ -15,14 +15,14 @@ export default function PujasPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { allPuja } = useSelector((state) => state.pujas);
+  const { allChadhava } = useSelector((state) => state.chadhavas);
 
   useEffect(() => {
-    dispatch(requestPujaDataAction());
+    dispatch(requestChadhavaAction());
   }, [dispatch]);
 
   const handleEdit = (id) => {
-    router.push(`/admin/puja/${id}`)
+    router.push(`/admin/chadhava/${id}`)
   };
 
   const handleMouseOver = (value, data) => {
@@ -35,11 +35,11 @@ export default function PujasPage() {
 
   const handleDelete = (id) => {
     console.log("handleDelete", id)
-      fetchWithWait({ dispatch, action: deletePujaAction({"id": id}) }).then((res) => {
+      fetchWithWait({ dispatch, action: deleteChadhavaAction({"id": id}) }).then((res) => {
         console.log("Response:", res);
         if (res.status === 200) {
           alert(res.message)
-          dispatch(requestPujaDataAction());
+          dispatch(requestChadhavaAction());
         } else {
           console.log("Error:", res.error);
           alert(res.error)
@@ -51,8 +51,9 @@ export default function PujasPage() {
 
 
   return (
-    <div className="flex-1 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
+     <div className="flex-1 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
       {/* Page Content */}
+      <div className="w-full">
         <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-200 text-sm md:text-base">
             <thead>
@@ -73,29 +74,29 @@ export default function PujasPage() {
               </tr>
             </thead>
             <tbody>
-              {allPuja?.map((puja) => (
+              {allChadhava?.map((chadhava) => (
                 <tr
-                  key={puja.id}
+                  key={chadhava.id}
                   className="text-center border hover:bg-gray-50 hover:text-blue-600 transition"
                 >
-                  <td className="p-2 border whitespace-nowrap">{puja.title}</td>
-                  <td className="p-2 border whitespace-nowrap">{puja.slug}</td>
-                  <td className="p-2 border">{puja.date}</td>
+                  <td className="p-2 border whitespace-nowrap">{chadhava.title}</td>
+                  <td className="p-2 border whitespace-nowrap">{chadhava.slug}</td>
+                  <td className="p-2 border">{chadhava.date}</td>
                   <td className="p-2 border">
-                    {puja.ratingValue} ({puja.ratingReviews})
+                    {chadhava.ratingValue} ({chadhava.ratingReviews})
                   </td>
-                  <td className="p-2 border">{puja.specialDay}</td>
-                  <td className="p-2 border whitespace-nowrap">{puja.location}</td>
+                  <td className="p-2 border">{chadhava.specialDay}</td>
+                  <td className="p-2 border whitespace-nowrap">{chadhava.location}</td>
                   <td className="p-2 border max-w-xs truncate">
-                    {puja.pujaDetails}
+                    {chadhava.pujaDetails}
                   </td>
                   <td className="p-2 border max-w-xs truncate">
-                    {puja.templeHistory}
+                    {chadhava.templeHistory}
                   </td>
                   <td
                     className="p-2 border cursor-pointer text-blue-600"
                     onMouseOver={() =>
-                      handleMouseOver("Packeges", puja.pujaPackages)
+                      handleMouseOver("Packeges", chadhava.chadhavaPackages)
                     }
                     onMouseLeave={() => setPackages(null)}
                   >
@@ -104,7 +105,7 @@ export default function PujasPage() {
                   <td
                     className="p-2 border cursor-pointer text-blue-600"
                     onMouseOver={() =>
-                      handleMouseOver("Offerings", puja.pujaOfferings)
+                      handleMouseOver("Offerings", chadhava.chadhavaOfferings)
                     }
                     onMouseLeave={() => setOffering(null)}
                   >
@@ -112,14 +113,14 @@ export default function PujasPage() {
                   </td>
                   <td
                     className="p-2 border cursor-pointer text-blue-600"
-                    onMouseOver={() => handleMouseOver("Faqs", puja.pujaFaqs)}
+                    onMouseOver={() => handleMouseOver("Faqs", chadhava.chadhavaFaqs)}
                     onMouseLeave={() => setFAQs(null)}
                   >
                     FAQs
                   </td>
                   <td
                     className="p-2 border cursor-pointer text-blue-600"
-                    onMouseOver={() => handleMouseOver("Images", puja.pujaImages)}
+                    onMouseOver={() => handleMouseOver("Images", chadhava.chadhavaImages)}
                     onMouseLeave={() => setImages(null)}
                   >
                     Images
@@ -127,13 +128,13 @@ export default function PujasPage() {
                   <td className="p-2 border space-x-2">
                     <button
                       className="bg-blue-500 text-white px-2 py-1 rounded text-sm cursor-pointer"
-                      onClick={() => handleEdit(puja.id)}
+                      onClick={() => handleEdit(chadhava.id)}
                     >
                       Edit
                     </button>
                     <button
                       className="bg-red-500 text-white px-2 py-1 rounded text-sm cursor-pointer"
-                      onClick={() => handleDelete(puja.id)}
+                      onClick={() => handleDelete(chadhava.id)}
                     >
                       Delete
                     </button>
@@ -143,6 +144,7 @@ export default function PujasPage() {
             </tbody>
           </table>
         </div>
+      </div>
 
       {/* {packages && (
         <div className="absolute top-10 left-10 bg-white shadow-lg border rounded p-4 z-50">

@@ -4,6 +4,38 @@ import models from "@/models";
 const { chadhava, chadhavaBanner, chadhavaFaqs, chadhavaPackages, pujaPerformed, recommendedChadawa } = models;
 
 
+export async function GET(req, { params }) {
+  try {
+    const chadhavas = await chadhava.findByPk(params.id, {
+      include: [chadhavaBanner, chadhavaFaqs, chadhavaPackages, pujaPerformed, recommendedChadawa ]
+    });
+    if (!chadhavas) {
+      return NextResponse.json({ error: "chadhavas not found" }, { status: 404 });
+    }
+    return NextResponse.json({ data: chadhavas, status: 200 });
+  } catch (error) {
+    console.error("GET by ID Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+//
+// ✅ DELETE /api/chadhava/:id
+//
+export async function DELETE(req, { params }) {
+  try {
+    const chadhavas = await chadhava.findByPk(params.id);
+    if (!chadhavas) {
+      return NextResponse.json({ error: "chadhavas not found" }, { status: 404 });
+    }
+
+    await chadhavas.destroy();
+    return NextResponse.json({ status: 200, message: "chadhavas deleted successfully" });
+  } catch (error) {
+    console.error("DELETE Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
 
 
 export async function PUT(req, context) {
@@ -32,8 +64,8 @@ export async function PUT(req, context) {
 
     // ✅ Update banners
     if (body.images) {
-      await chadhavaBanners.destroy({ where: { chadhavaId: updatedChadhava.id } });
-      await chadhavaBanners.bulkCreate(
+      await chadhavaBanner.destroy({ where: { chadhavaId: updatedChadhava.id } });
+      await chadhavaBanner.bulkCreate(
         body.images.map((img) => ({
           image_url: img,
           chadhavaId: updatedChadhava.id,
@@ -54,8 +86,8 @@ export async function PUT(req, context) {
 
     // ✅ Update recommended chadhawas
     if (body.recommendedChadawa) {
-      await recommendedChadawas.destroy({ where: { chadhavaId: updatedChadhava.id } });
-      await recommendedChadawas.bulkCreate(
+      await recommendedChadawa.destroy({ where: { chadhavaId: updatedChadhava.id } });
+      await recommendedChadawa.bulkCreate(
         body.recommendedChadawa.map((r) => ({
           ...r,
           chadhavaId: updatedChadhava.id,
@@ -87,7 +119,7 @@ export async function PUT(req, context) {
 
     // ✅ Fetch back with associations
     const finalData = await chadhava.findByPk(updatedChadhava.id, {
-      include: [chadhavaBanners, chadhavaPackages, recommendedChadawas, chadhavaFaqs, pujaPerformed],
+      include: [chadhavaBanner, chadhavaPackages, recommendedChadawa, chadhavaFaqs, pujaPerformed],
     });
 
     return NextResponse.json({

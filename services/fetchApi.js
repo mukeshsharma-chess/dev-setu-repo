@@ -1,7 +1,7 @@
 import Api from '.';
 import { endpoints } from './endpoints';
 
-let baseApiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+// let baseApiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default class fetchApi extends Api {
 
@@ -45,6 +45,7 @@ export default class fetchApi extends Api {
     }
 
     GetChadhavaDetails(data) {
+        console.log("GetChadhavaDetails", data)
         let url = this.buildUrl(endpoints.Chadhava.chadhava, "full")
         return this.fetchParams(url, "GET", null, `/${data}`).then(response => response)
     }

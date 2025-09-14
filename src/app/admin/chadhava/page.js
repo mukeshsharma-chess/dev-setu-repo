@@ -204,10 +204,10 @@ const ChadhavaForm = () => {
   };
 
   return (
-    <div className="flex-1 p-6 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
+    <div className="flex-1 p-1 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
       <form
         onSubmit={handleSubmit}
-        className="mx-auto shadow-md rounded-lg max-h-screen"
+        className="mx-auto shadow-md rounded-lg p-6 space-y-6 max-h-screen scrollbar-hide"
       >
         {/* <h1 className="text-2xl font-bold">Puja Form</h1> */}
 
@@ -576,9 +576,14 @@ const ChadhavaForm = () => {
                 />
                 <DatePicker
                   selected={item.date}
-                  onChange={(date) => setFormData({ ...formData.recommendedChadawa, date })}
+                  onChange={(date) => {
+                    const updated = [...formData?.recommendedChadawa];
+                    updated[index].date = date;
+                    setFormData({ ...formData, recommendedChadawa: updated });
+                  }}
                   className="w-full border p-2 rounded"
                 />
+
                 <input
                   type="number"
                   placeholder="price"
