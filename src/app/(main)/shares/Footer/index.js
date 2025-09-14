@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Youtube, Instagram, Linkedin, Facebook, MessageCircle, X } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -10,11 +11,11 @@ export default function Footer() {
         {/* Left - Logo & About */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <Image src="/logo.png" alt="Sri Mandir" width={40} height={40} className="rounded-full" />
-            <span className="text-xl font-semibold">Sri Mandir</span>
+            <Image src="/logo.png" alt="Dev Setu" width={40} height={40} className="rounded-full" />
+            <span className="text-xl font-semibold">Dev Setu</span>
           </div>
           <p className="text-sm leading-relaxed">
-            Sri Mandir has brought religious services to the masses in India by connecting devotees,
+            Dev Setu has brought religious services to the masses in India by connecting devotees,
             pandits and temples. Partnering with over 50 renowned temples, we provide exclusive pujas
             and offerings performed by expert pandits and share videos of the completed puja rituals.
           </p>
@@ -24,8 +25,8 @@ export default function Footer() {
         <div>
           <h3 className="font-semibold text-lg mb-3">Company</h3>
           <ul className="space-y-2">
-            <li><a href="#" className="hover:underline">About Us</a></li>
-            <li><a href="#" className="hover:underline">Contact Us</a></li>
+            <li><Link href="/about-us" className="hover:underline">About Us</Link></li>
+            <li><Link href="/contect-us" className="hover:underline">Contact Us</Link></li>
           </ul>
         </div>
 
@@ -33,10 +34,10 @@ export default function Footer() {
         <div>
           <h3 className="font-semibold text-lg mb-3">Our Services</h3>
           <ul className="space-y-2">
-            <li><a href="#" className="hover:underline">Puja</a></li>
-            <li><a href="#" className="hover:underline">Chadhava</a></li>
-            <li><a href="#" className="hover:underline">Panchang</a></li>
-            <li><a href="#" className="hover:underline">Temples</a></li>
+            <li><Link href="/puja" className="hover:underline">Puja</Link></li>
+            <li><Link href="/chadhava" className="hover:underline">Chadhava</Link></li>
+            <li><Link href="/vip-puja" className="hover:underline">VIP Puja</Link></li>
+            <li><Link href="/seva" className="hover:underline">Seva</Link></li>
           </ul>
         </div>
 
@@ -48,12 +49,12 @@ export default function Footer() {
             above Axis Bank, Sector 4, HSR Layout, Bengaluru, Karnataka 560102
           </p>
           <div className="flex gap-3">
-            <a href="#"><Youtube size={22} /></a>
-            <a href="#"><Instagram size={22} /></a>
-            <a href="#"><Linkedin size={22} /></a>
-            <a href="#"><MessageCircle size={22} /></a>
-            <a href="#"><X size={22} /></a>
-            <a href="#"><Facebook size={22} /></a>
+            <Link href="#"><Youtube size={22} /></Link>
+            <Link href="#"><Instagram size={22} /></Link>
+            <Link href="#"><Linkedin size={22} /></Link>
+            <Link href="#"><MessageCircle size={22} /></Link>
+            <Link href="#"><X size={22} /></Link>
+            <Link href="#"><Facebook size={22} /></Link>
           </div>
         </div>
       </div>
@@ -77,8 +78,8 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="text-sm text-center md:text-right">
-            <a href="#" className="hover:underline">Privacy Policy</a> ·{" "}
-            <a href="#" className="hover:underline">Terms and Conditions</a>
+            <Link href="#" className="hover:underline">Privacy Policy</Link> ·{" "}
+            <Link href="#" className="hover:underline">Terms and Conditions</Link>
             <p className="mt-1">© 2025 SriMandir, Inc. All rights reserved.</p>
           </div>
         </div>

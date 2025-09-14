@@ -10,8 +10,10 @@ const menu = [
         {id : 1, title: "Home", path : "/"},
         {id : 2, title: "Puja", path : "/puja"},
         {id : 3, title: "Chadhava", path : "/chadhava"},
-        {id : 4, title: "Temples", path : "/temples"},
-        {id : 5, title: "About", path : "/about-us"}
+        {id : 4, title: "VIP Puja", path : "/vip-puja"},
+        {id : 5, title: "Seva", path : "/seva"},
+        {id : 6, title: "About Us", path : "/about-us"},
+        {id : 7, title: "Contect Us", path : "/contect-us"}
     ]
 
 const Header = () => {
@@ -20,7 +22,7 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="w-full bg-saffron shadow-sm sticky top-0 z-50" style={{ backgroundColor: "#d86a09" }}>
+    <header className="w-full mb-[280px] bg-saffron shadow-sm sticky top-0 z-50" style={{ backgroundColor: "#d86a09" }}>
       <div className="max-w-7xl mx-auto flex items-center justify-between py-3 px-6">
         
         {/* Left: Logo + Brand */}
