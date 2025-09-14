@@ -22,8 +22,8 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="w-full mb-[280px] bg-saffron shadow-sm sticky top-0 z-50" style={{ backgroundColor: "#d86a09" }}>
-      <div className="max-w-7xl mx-auto flex items-center justify-between py-3 px-6">
+    <header className="w-full bg-saffron shadow-sm sticky top-0 z-50" style={{ backgroundColor: "#d86a09" }}>
+      <div className="max-w-7xl mx-auto flex items-center justify-between py-2 px-6">
         
         {/* Left: Logo + Brand */}
         <div className="flex items-center gap-2">

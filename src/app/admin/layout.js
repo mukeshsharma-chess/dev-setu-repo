@@ -1,9 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import ReduxProvider from "../../redux";
 import "react-datepicker/dist/react-datepicker.css";
 import "./globals.css";
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
-import ReduxProvider from "../../redux";
+import Header from "../shares/AdminHeader";
+import Sidebar from "../shares/AdminSidebar";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

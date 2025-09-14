@@ -4,13 +4,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules"; // agar v9+
 import LazyImage from "../atom/LazyImage";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+
 
 const HeroBanner = ({ slides }) => {
   return (
-    <div className="relative mt-4 w-screen overflow-hidden">
+    <div className="relative w-screen overflow-hidden">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation={{
@@ -19,7 +17,7 @@ const HeroBanner = ({ slides }) => {
         }}
         pagination={{ clickable: true }}
         autoplay={{ delay: 5000 }}
-        loop
+        loop 
         className="w-screen h-[600px] !mx-0 !px-0"  // ! to override any conflicting utility
       >
         {slides?.map((slide, index) => (
