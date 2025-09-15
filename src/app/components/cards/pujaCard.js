@@ -5,7 +5,7 @@ import LazyImage from "../atom/LazyImage";
 export default function PujaCard({ pujas }) {
   return (
     <>
-      <div className="grid md:grid-cols-3 gap-6 px-4 md:px-16">
+      <div className="grid md:grid-cols-3 gap-6 px-6 md:px-16">
         {pujas.map((puja, idx) => (
           <div
             key={idx}
@@ -16,7 +16,7 @@ export default function PujaCard({ pujas }) {
               alt={puja.title}
               width={400}
               height={200}
-              className="w-full h-48 object-cover"
+              className="w-full h-48 object-cover p-3"
             />
             <div className="p-4">
               <h3 className="font-bold text-lg">{puja.title}</h3>

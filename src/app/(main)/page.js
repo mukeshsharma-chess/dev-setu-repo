@@ -95,50 +95,52 @@ const pujas = [
 
 export default function Home() {
   return (
-    <div className="font-sans grid items-center justify-items-center min-h-screen pb-20 gap-16">
+    <div className="font-sans grid items-center justify-items-center min-h-screen pb-20 gap-6">
       <HeroBanner slides={slidesData} />
 
-      <section className="py-12 bg-gray-50">
-      <h2 className="text-center text-3xl font-bold text-purple-700 mb-8">
-        Sri Mandir Special Pujas
-      </h2>
-      <PujaCard pujas={pujas} />
+      <section className="py-12 px-8 bg-gray-50">
+       <div className="mx-auto max-w-screen-md text-left md:text-center  lg:mb-0">
+         <h2 className="text-center text-3xl font-bold text-purple-700 mb-8">
+          Sri Mandir Special Pujas
+        </h2>
+       </div>
+        <PujaCard pujas={pujas} />
       </section>
 
-       <section className="bg-white text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6">
-                Can a puja done on your behalf be effective?
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-                Learn from trusted experts how a puja arranged from home with true
-                devotion is as effective as one attended in-person at a temple.
-            </p>
-            <Effectiveness />
-        </section>
+      <section className="bg-white text-center">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6">
+          Can a puja done on your behalf be effective?
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto mb-10">
+          Learn from trusted experts how a puja arranged from home with true
+          devotion is as effective as one attended in-person at a temple.
+        </p>
+        <Effectiveness />
+      </section>
 
-        <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50">
         <h2 className="text-center text-3xl font-bold mb-10">Reviews & Ratings</h2>
         <Reviews reviews={reviews} />
-    </section>
+      </section>
 
-    <section className="py-16 bg-white text-center">
-      <h2 className="text-3xl font-bold mb-6">
-        India’s Largest Devotional Platform
-      </h2>
-      <p className="text-gray-600 max-w-3xl mx-auto mb-10">
-        We are committed to building the most trusted destination that serves
-        the devotional needs of millions of devotees in India and abroad,
-        providing them the access they always wanted.
-      </p>
-      <PlatformInfo />
-    </section>
+      <section className="py-16 bg-white text-center">
+        <h2 className="text-3xl font-bold mb-6">
+          India’s Largest Devotional Platform
+        </h2>
+        <p className="text-gray-600 max-w-3xl mx-auto mb-10">
+          We are committed to building the most trusted destination that serves
+          the devotional needs of millions of devotees in India and abroad,
+          providing them the access they always wanted.
+        </p>
+        <PlatformInfo />
+      </section>
 
 
-    <section className="py-16 bg-gray-50">
-      <h2 className="text-center text-3xl font-bold mb-10">
-        One App for all your devotional needs
-      </h2>
-      <Features features={features} />
+      <section className="py-16 bg-gray-50">
+        <h2 className="text-center text-3xl font-bold mb-10">
+          One App for all your devotional needs
+        </h2>
+        <Features features={features} />
 
       </section>
 
@@ -148,7 +150,7 @@ export default function Home() {
         </h2>
         <Chalisa chalisaItems={chalisaItems} />
       </section>
-      
+
     </div>
   );
 }
