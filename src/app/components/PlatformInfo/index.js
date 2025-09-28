@@ -2,7 +2,7 @@
 const PlatformInfo = () => {
   return (
 
-    <div className="grid md:grid-cols-4 gap-6 px-6 md:px-20">
+    <div className="grid text-white-600 md:grid-cols-4 gap-6 px-6 md:px-20">
       <div>
         <h3 className="text-2xl font-bold">30M+</h3>
         <p className="text-sm text-gray-600">Devotees</p>

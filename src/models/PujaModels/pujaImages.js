@@ -9,8 +9,18 @@ export default (sequelize, DataTypes) => {
     },
     imageUrl: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       field: "image_url",
+    },
+    type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "type",
+    },
+    position: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      field: "position",
     },
     createdAt: {
       type: DataTypes.DATE,

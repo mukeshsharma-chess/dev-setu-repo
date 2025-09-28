@@ -5,13 +5,25 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
-    },
-    image_url: {
+    }, image_url: {
       type: DataTypes.STRING,
       allowNull: true,
       field: "image_url",
-    },
-    chadhavaId: {
+    }, type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "type",
+    }, position: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      field: "position",
+    }, createdAt: {
+      type: DataTypes.DATE,
+      field: "created_at",
+    }, updatedAt: {
+      type: DataTypes.DATE,
+      field: "updated_at",
+    }, chadhavaId: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: { model: "chadhava", key: "id" },

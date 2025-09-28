@@ -60,9 +60,15 @@ export async function POST(req) {
           answer: f.description,
           icon: f.icon ?? "",
         })) || [],
-        chadhavaBanners: body.images?.map(img => ({
-          image_url: Array.isArray(img) ? img[0] : img,
-        })) || [],
+
+        // ✅ Banners
+        chadhavaBanners:
+          body.banners?.map(banner => ({
+            image_url: banner.imgUrl,
+            type: banner.type,
+            position: banner.position,
+          })) || [],
+
         pujaPerformeds: body.pujaPerformedBy || [],
       },
       {

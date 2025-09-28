@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { fetchWithWait } from "../../../../helper/method";
 import { addNewChadhavaAction, requestChadhavaAction } from "@/redux/actions/chadhavaAction";
 
@@ -23,7 +25,7 @@ const ChadhavaForm = () => {
     packages: [{ packImg: "", title: "", description: "", price: "", currency: "INR", tags: "" }],
     recommendedChadawa: [{ recommendedImg: "", status: "", title: "", location: "", date: new Date(), price: "", currency: "INR" }],
     faqs: [{ icon: null, title: "", description: "" }],
-    images: [],
+    banners: [{imgUrl: null, type: "", position: 0}],
     pujaPerformedBy: { name: "", temple: "", pujaPerformerImg: "", bio: "" },
   });
 
@@ -53,14 +55,14 @@ const ChadhavaForm = () => {
       // Local preview
       const localPreview = URL.createObjectURL(file);
 
-      console.log("localPreview", localPreview)
+      // console.log("localPreview", localPreview)
 
-      if (name === "image") {
+      if (name === "imgUrl") {
         // Update images preview
         setFormData((prev) => {
-          const updated = [...prev.images];
-          updated[index] = localPreview;
-          return { ...prev, images: updated };
+          const updated = [...prev.banners];
+          updated[index].imgUrl = localPreview.toString();
+          return { ...prev, banners: updated };
         });
       } else if (name === "recommendedImg") {
         // Update FAQ icon preview
@@ -107,11 +109,11 @@ const ChadhavaForm = () => {
         // console.log("datadatadata",data)
 
         if (res.ok) {
-          if (name === "image") {
+          if (name === "imgUrl") {
             setFormData((prev) => {
-              const updated = [...prev.images];
-              updated[index] = (data.storedAs).toString(); // server path
-              return { ...prev, images: updated };
+              const updated = [...prev.banners];
+              updated[index].imgUrl = (data.storedAs).toString(); // server path
+              return { ...prev, banners: updated };
             });
           } else if (name === "recommendedImg") {
             setFormData((prev) => {
@@ -177,7 +179,7 @@ const ChadhavaForm = () => {
   };
 
 
-  // console.log("Submitting form data===:", formData);
+  console.log("Submitting form data===:", formData);
 
   const slugify = (text) => {
     return text
@@ -202,6 +204,110 @@ const ChadhavaForm = () => {
       console.log(`error`, e)
     })
   };
+
+
+
+// const exportStyledExcel = async (e) => {
+//   e.preventDefault();
+//   const workbook = new ExcelJS.Workbook();
+
+//   // 🧾 Main Info Sheet
+//   const mainSheet = workbook.addWorksheet('Main Info');
+//   mainSheet.columns = [
+//     { header: 'Title', key: 'title', width: 40 },
+//     { header: 'Slug', key: 'slug', width: 40 },
+//     { header: 'Rating', key: 'ratingValue', width: 10 },
+//     { header: 'Reviews', key: 'ratingReviews', width: 10 },
+//     { header: 'Special Day', key: 'specialDay', width: 20 },
+//     { header: 'Location', key: 'location', width: 30 },
+//     { header: 'Date', key: 'date', width: 25 },
+//     { header: 'Puja Details', key: 'pujaDetails', width: 80 },
+//     { header: 'Temple History', key: 'templeHistory', width: 80 },
+//   ];
+//   mainSheet.addRow({
+//     title: formData?.title ?? '',
+//     slug: formData?.slug ?? '',
+//     ratingValue: formData?.ratingValue ?? '',
+//     ratingReviews: formData?.ratingReviews ?? '',
+//     specialDay: formData?.specialDay ?? '',
+//     location: formData?.location ?? '',
+//     date: formData?.date ? new Date(formData.date).toISOString() : '',
+//     pujaDetails: formData?.pujaDetails ?? '',
+//     templeHistory: formData?.templeHistory ?? '',
+//   });
+//   mainSheet.getRow(1).font = { bold: true };
+
+//   // 🙏 Puja Performer Sheet
+//   const performerSheet = workbook.addWorksheet('Puja Performer');
+//   performerSheet.columns = [
+//     { header: 'Name', key: 'name', width: 20 },
+//     { header: 'Temple', key: 'temple', width: 30 },
+//     { header: 'Image URL', key: 'pujaPerformerImg', width: 50 },
+//     { header: 'Bio', key: 'bio', width: 80 },
+//   ];
+//   performerSheet.addRow(formData?.pujaPerformedBy ?? {});
+//   performerSheet.getRow(1).font = { bold: true };
+
+//   // 📦 Packages Sheet
+//   const packagesSheet = workbook.addWorksheet('Packages');
+//   packagesSheet.columns = [
+//     { header: 'Image URL', key: 'packImg', width: 50 },
+//     { header: 'Title', key: 'title', width: 30 },
+//     { header: 'Description', key: 'description', width: 60 },
+//     { header: 'Price', key: 'price', width: 10 },
+//     { header: 'Currency', key: 'currency', width: 10 },
+//     { header: 'Tags', key: 'tags', width: 20 },
+//   ];
+//   (formData?.packages ?? []).forEach(pkg => packagesSheet.addRow(pkg));
+//   packagesSheet.getRow(1).font = { bold: true };
+
+//   // 🪔 Recommended Chadawa Sheet
+//   const chadawaSheet = workbook.addWorksheet('Recommended Chadawa');
+//   chadawaSheet.columns = [
+//     { header: 'Image URL', key: 'recommendedImg', width: 50 },
+//     { header: 'Status', key: 'status', width: 15 },
+//     { header: 'Title', key: 'title', width: 40 },
+//     { header: 'Location', key: 'location', width: 30 },
+//     { header: 'Date', key: 'date', width: 25 },
+//     { header: 'Price', key: 'price', width: 10 },
+//     { header: 'Currency', key: 'currency', width: 10 },
+//   ];
+//   (formData?.recommendedChadawa ?? []).forEach(item => {
+//     chadawaSheet.addRow({
+//       ...item,
+//       date: item.date ? new Date(item.date).toISOString() : '',
+//     });
+//   });
+//   chadawaSheet.getRow(1).font = { bold: true };
+
+//   // ❓ FAQs Sheet
+//   const faqsSheet = workbook.addWorksheet('FAQs');
+//   faqsSheet.columns = [
+//     { header: 'Icon', key: 'icon', width: 10 },
+//     { header: 'Title', key: 'title', width: 40 },
+//     { header: 'Description', key: 'description', width: 80 },
+//   ];
+//   (formData?.faqs ?? []).forEach(faq => faqsSheet.addRow(faq));
+//   faqsSheet.getRow(1).font = { bold: true };
+
+//   // 🖼️ Images Sheet
+//   const imagesSheet = workbook.addWorksheet('Images');
+//   imagesSheet.columns = [
+//     { header: 'Image URL', key: 'url', width: 80 },
+//   ];
+//   (formData?.images ?? []).forEach(img => imagesSheet.addRow({ url: img }));
+//   imagesSheet.getRow(1).font = { bold: true };
+
+//   // 📥 Download Excel
+//   const buffer = await workbook.xlsx.writeBuffer();
+//   const blob = new Blob([buffer], {
+//     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+//   });
+//   saveAs(blob, 'TempleChadhavaFullData.xlsx');
+// };
+
+
+
 
   return (
     <div className="flex-1 p-1 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
@@ -234,69 +340,99 @@ const ChadhavaForm = () => {
         </div>
 
         {/* Images (File Upload) */}
-        <div>
-          <label className="block font-semibold mb-2">Banners</label>
 
-          <div className="flex flex-wrap gap-4">
-            {formData?.images.map((img, index) => (
-              <div key={index} className="relative">
-                {img ? (
-                  <div>
-                    <img
-                      src={img}
-                      alt={`Uploaded ${index}`}
-                      className="w-32 h-32 object-cover rounded border"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = formData?.images.filter((_, i) => i !== index);
-                        setFormData({ ...formData, images: updated });
-                      }}
-                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 cursor-pointer"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <input
-                      type="file"
-                      name="image"
-                      accept="image/*"
-                      onChange={(e) => handleChange(e, index)}
-                      className="w-32 h-32 border rounded flex items-center justify-center text-sm p-2"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = formData?.images.filter((_, i) => i !== index);
-                        setFormData({ ...formData, images: updated });
-                      }}
-                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 cursor-pointer"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </>
-                )}
-              </div>
-            ))}
-
-            {/* Add Image Button */}
-            <button
-              type="button"
-              onClick={() =>
-                setFormData({
-                  ...formData,
-                  images: [...formData?.images, null],
-                })
-              }
-              className="w-32 h-32 border-2 border-dashed border-green-500 flex items-center justify-center rounded text-green-600 hover:bg-green-50 cursor-pointer"
-            >
-              + Add Banner
-            </button>
-          </div>
-        </div>
+         {/* Images (File Upload) */}
+        
+                <div>
+                  <label className="block font-semibold mb-2">Banners</label>
+        
+                  {formData?.banners.map((item, index) => (
+                    <div key={index} className="border p-3 rounded mb-3 relative">
+                      {formData?.banners.length > 1 && <button
+                        type="button"
+                        onClick={() => {
+                          const updated = formData?.banners.filter((_, i) => i !== index);
+                          setFormData({ ...formData, banners: updated });
+                        }}
+                        className="absolute top-2 right-2 text-red-600 hover:text-red-800"
+                      >
+                        <Trash2 size={18} />
+                      </button>}
+        
+                      <div className="mb-3">
+                        <label className="block font-medium">Banner</label>
+                        {item.imgUrl ? (
+                          <div className="relative w-32 h-32">
+                            <img
+                              src={item.imgUrl}
+                              alt={`banner imgUrl ${index}`}
+                              className="w-32 h-32 object-cover rounded border cursor-pointer"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...formData?.banners];
+                                updated[index].imgUrl = null;
+                                setFormData({ ...formData, banners: updated });
+                              }}
+                              className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 cursor-pointer"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        ) : (
+                          <input
+                            type="file"
+                            name="imgUrl"
+                            accept="image/*"
+                            onChange={(e) => handleChange(e, index)} // ✅ index now works
+                            className="w-32 h-32 border rounded flex items-center justify-center text-sm p-2 cursor-pointer"
+                          />
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                      <select
+                        value={item.type}
+                        onChange={(e) => {
+                          const updated = [...formData?.banners];
+                          updated[index].type = e.target.value;
+                          setFormData({ ...formData, banners: updated });
+                        }}
+                        className="w-full border p-2 rounded mb-2"
+                      >
+                        <option value="">Select</option>
+                        <option value="eng">English</option>
+                        <option value="hi">Hindi</option>
+                      </select>
+                      <input
+                        type="number"
+                        placeholder="Position"
+                        value={item.position}
+                        onChange={(e) => {
+                          const updated = [...formData?.banners];
+                          updated[index].position = e.target.value;
+                          setFormData({ ...formData, banners: updated });
+                        }}
+                        className="w-full border p-2 rounded mb-2"
+                      />
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        banners: [...formData?.banners, { imgUrl: "", type: "", position: "" }],
+                      })
+                    }
+                    className="bg-green-500 text-white px-4 py-1 rounded cursor-pointer"
+                  >
+                    + Add Banners
+                  </button>
+        
+                </div>
+       
 
         {/* Rating */}
         <div className="grid grid-cols-3 gap-3">
@@ -769,6 +905,14 @@ const ChadhavaForm = () => {
           className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
         >
           Submit
+        </button>
+
+        <button
+          type="button"
+          onClick={(e) => exportStyledExcel(e)}
+          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Excel
         </button>
       </form>
     </div>

@@ -21,57 +21,78 @@ export async function GET() {
 
 export async function POST(req) {
   try {
-    const body = await req.json(); // parse incoming JSON body
+    const body = await req.json();
 
-    // Extract the common offerimg array from the 'offerings' object
     const commonOfferImages = body.offerings.offerimg || [];
 
     const newPuja = await pujas.create(
       {
         title: body.title,
-        slug: body.slug, // Added slug field
-        ratingValue: parseFloat(body.ratingValue), // Ensure ratingValue is a float
-        ratingReviews: parseInt(body.ratingReviews), // Ensure ratingReviews is an integer
+        slug: body.slug,
+        ratingValue: parseFloat(body.ratingValue),
+        ratingReviews: parseInt(body.ratingReviews),
         specialDay: body.specialDay,
         location: body.location,
-        date: new Date(body.date), // Ensure date is a proper Date object
+        date: new Date(body.date),
         pujaDetails: body.pujaDetails,
         templeHistory: body.templeHistory,
 
-        // map payload keys → association keys
         pujaPackages: body.packages.map(pkg => ({
           packImg: pkg.packImg,
           packageType: pkg.packageType,
-          packagePrice: parseFloat(pkg.packagePrice) // Ensure price is a float
+          packagePrice: parseFloat(pkg.packagePrice),
         })),
 
         pujaOfferings: body.offerings.offers.map(o => ({
-          // Map each individual offering from 'offers' array
           title: o.title,
           Description: o.description,
-          offerimg: commonOfferImages, // Assign the common array of images to each offering
+          offerimg: commonOfferImages,
         })),
+
         pujaFaqs: body.faqs.map(f => ({
-          question: f.title, // Mapping 'title' from payload to 'question' in model
-          answer: f.description, // Mapping 'description' from payload to 'answer' in model
+          question: f.title,
+          answer: f.description,
           icon: f.icon ?? "",
         })),
-        pujaImages: body.images.map(imgUrl => ({ // body.images is an array of strings, not objects
-          imageUrl: imgUrl, // Directly use the URL string
-        })),
+
+        pujaImages: body.banners?.map(banner => ({
+          imageUrl: banner.imgUrl,
+          type: banner.type,
+          position: banner.position ? parseInt(banner.position) : null,
+        })) || [],
       },
       {
-        include: [pujaPackages, pujaOfferings, pujaFaqs, pujaImages],
+        include: [
+          { model: pujaPackages },
+          { model: pujaOfferings },
+          { model: pujaFaqs },
+          { model: pujaImages },
+        ],
       }
     );
 
-    return NextResponse.json(
-      { status: 200, data: newPuja },
-    );
+    return NextResponse.json({ status: 200, data: newPuja });
   } catch (error) {
     console.error("Error creating Puja:", error);
+
+    // ✅ Sequelize validation error
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return NextResponse.json(
+        { status: "error", message: `Duplicate value: ${error.errors[0].message}` },
+        { status: 400 }
+      );
+    }
+
+    if (error.name === "SequelizeValidationError") {
+      return NextResponse.json(
+        { status: "error", message: error.errors.map(e => e.message).join(", ") },
+        { status: 400 }
+      );
+    }
+
+    // fallback
     return NextResponse.json(
-      { status: "error", message: error.message },
+      { status: "error", message: "Internal server error" },
       { status: 500 }
     );
   }

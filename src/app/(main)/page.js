@@ -123,17 +123,27 @@ export default function Home() {
         <Reviews reviews={reviews} />
       </section>
 
-      <section className="py-16 bg-white text-center">
-        <h2 className="text-3xl font-bold mb-6">
-          India’s Largest Devotional Platform
-        </h2>
-        <p className="text-gray-600 max-w-3xl mx-auto mb-10">
-          We are committed to building the most trusted destination that serves
-          the devotional needs of millions of devotees in India and abroad,
-          providing them the access they always wanted.
-        </p>
-        <PlatformInfo />
+      <section className="p-16 bg-teal-500 w-screen">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-6">
+          {/* Left side */}
+          <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
+            <h2 className="text-3xl font-bold mb-6">
+              India’s Largest Devotional Platform
+            </h2>
+            <p className="text-white-600 max-w-3xl">
+              We are committed to building the most trusted destination that serves
+              the devotional needs of millions of devotees in India and abroad,
+              providing them the access they always wanted.
+            </p>
+          </div>
+
+          {/* Right side */}
+          <div className="md:w-1/2 flex justify-center">
+            <PlatformInfo />
+          </div>
+        </div>
       </section>
+
 
 
       <section className="py-16 bg-gray-50">
