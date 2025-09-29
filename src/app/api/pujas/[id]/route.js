@@ -65,9 +65,10 @@ export async function PUT(req, context) {
 if (body.images) {
   await pujaImages.destroy({ where: { pujaId: updatedPujas.id } });
   await pujaImages.bulkCreate(
-    body.images.map((img) => ({
-      imageUrl: img,   // ✅ Use model key, not db field
-      pujaId: updatedPujas.id,
+    body.banners?.map(banner => ({
+      imageUrl: banner.imgUrl,
+      type: banner.type,
+      position: banner.position ? parseInt(banner.position) : null,
     }))
   );
 }

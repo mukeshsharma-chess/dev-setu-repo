@@ -66,9 +66,10 @@ export async function PUT(req, context) {
     if (body.images) {
       await chadhavaBanner.destroy({ where: { chadhavaId: updatedChadhava.id } });
       await chadhavaBanner.bulkCreate(
-        body.images.map((img) => ({
-          image_url: img,
-          chadhavaId: updatedChadhava.id,
+        body.banners?.map(banner => ({
+          image_url: banner.imgUrl,
+          type: banner.type,
+          position: banner.position,
         }))
       );
     }
