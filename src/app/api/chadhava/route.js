@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import models from "@/models";
 
-const { chadhava, chadhavaBanner, chadhavaFaqs, chadhavaPackages, pujaPerformed, recommendedChadawa } = models;
+const { chadhava, chadhavaBanner, chadhavaFaqs, chadhavaPackages, pujaPerformed, recommendedChadawa, templeHistory } = models;
 
 //
 // GET: fetch all chadhavas with relations
@@ -15,6 +15,7 @@ export async function GET() {
         { model: chadhavaPackages },
         { model: pujaPerformed },
         { model: recommendedChadawa },
+        { model: templeHistory },
       ],
     });
 
@@ -35,6 +36,7 @@ export async function POST(req) {
     const newChadhava = await chadhava.create(
       {
         title: body.title,
+        subTitle: body.subTitle,
         slug: body.slug,
         ratingValue: body.ratingValue,
         ratingReviews: body.ratingReviews,
@@ -42,7 +44,8 @@ export async function POST(req) {
         location: body.location,
         date: body.date,
         pujaDetails: body.pujaDetails,
-        templeHistory: body.templeHistory,
+        isActive: body.isActive,
+        isActiveOnHome: body.isActiveOnHome,
 
         // ✅ Use correct association keys
         chadhavaPackages: body.packages || [],
@@ -58,8 +61,13 @@ export async function POST(req) {
         chadhavaFaqs: body.faqs?.map(f => ({
           question: f.title,
           answer: f.description,
-          icon: f.icon ?? "",
         })) || [],
+
+        templeHistories: body.temple ? [{
+          templeImg: body.temple.templeImg,
+          templeName: body.temple.templeName,
+          templeHistory: body.temple.templeHistory
+        }] : [],
 
         // ✅ Banners
         chadhavaBanners:
@@ -78,6 +86,7 @@ export async function POST(req) {
           { model: chadhavaFaqs },
           { model: chadhavaBanner },
           { model: pujaPerformed },
+          { model: templeHistory }
         ],
       }
     );

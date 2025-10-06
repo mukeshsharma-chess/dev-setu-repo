@@ -1,6 +1,6 @@
 "use client";
 
-import { deletePujaAction, requestPujaDataAction } from "@/redux/actions/pujaActions";
+import { deletePujaAction, requestPujaDataAction, updatePujaAction } from "@/redux/actions/pujaActions";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWithWait } from "../../../../../helper/method";
@@ -49,6 +49,27 @@ export default function PujasPage() {
       })
     };
 
+      const handleToggle = (id, field, currentValue) => {
+        // field = "isActive" | "isActiveOnHome"
+        const payload = {
+          id,
+          [field]: !currentValue,
+        };
+    
+        fetchWithWait({ dispatch, action: updatePujaAction(payload) })
+          .then((res) => {
+            if (res.status === 200) {
+              // alert(res.message || `${field} updated successfully`);
+              dispatch(requestPujaDataAction());
+            } else {
+              alert(res.error || "Something went wrong");
+            }
+          })
+          .catch((e) => {
+            console.error("Toggle error:", e);
+          });
+      };
+    
 
   return (
     <div className="flex-1 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
@@ -57,7 +78,9 @@ export default function PujasPage() {
           <table className="min-w-full border border-gray-200 text-sm md:text-base">
             <thead>
               <tr className="bg-green-500 text-white">
+                <th className="p-2 border">ID</th>
                 <th className="p-2 border">Title</th>
+                <th className="p-2 border">Sub Title</th>
                 <th className="p-2 border">Slug</th>
                 <th className="p-2 border">Date</th>
                 <th className="p-2 border">Rating</th>
@@ -65,6 +88,8 @@ export default function PujasPage() {
                 <th className="p-2 border">Location</th>
                 <th className="p-2 border">Puja Details</th>
                 <th className="p-2 border">Temple History</th>
+                <th className="p-2 border">Is Active</th>
+                <th className="p-2 border">Active on home</th>
                 <th className="p-2 border">Packages</th>
                 <th className="p-2 border">Offerings</th>
                 <th className="p-2 border">FAQs</th>
@@ -78,7 +103,9 @@ export default function PujasPage() {
                   key={puja.id}
                   className="text-center border hover:bg-gray-50 hover:text-blue-600 transition"
                 >
+                  <td className="p-2 border whitespace-nowrap">{puja.id}</td>
                   <td className="p-2 border whitespace-nowrap">{puja.title}</td>
+                  <td className="p-2 border whitespace-nowrap">{puja.subTitle}</td>
                   <td className="p-2 border whitespace-nowrap">{puja.slug}</td>
                   <td className="p-2 border">{puja.date}</td>
                   <td className="p-2 border">
@@ -92,6 +119,35 @@ export default function PujasPage() {
                   <td className="p-2 border max-w-xs truncate">
                     {puja.templeHistory}
                   </td>
+
+                 <td className="p-2 border max-w-xs truncate">
+                    <button
+                      type="button"
+                      onClick={() => handleToggle(puja.id, "isActive", puja.isActive)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${puja.isActive ? "bg-green-600" : "bg-gray-600"
+                        }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${puja.isActive ? "translate-x-6" : "translate-x-1"
+                          }`}
+                      />
+                    </button>
+                  </td>
+
+                  <td className="p-2 border max-w-xs truncate">
+                    <button
+                      type="button"
+                      onClick={() => handleToggle(puja.id, "isActiveOnHome", puja.isActiveOnHome)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${puja.isActiveOnHome ? "bg-green-600" : "bg-gray-600"
+                        }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${puja.isActiveOnHome ? "translate-x-6" : "translate-x-1"
+                          }`}
+                      />
+                    </button>
+                  </td>
+                  
                   <td
                     className="p-2 border cursor-pointer text-blue-600"
                     onMouseOver={() =>

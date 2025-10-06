@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import models from "@/models";
 
-const { chadhava, chadhavaBanner, chadhavaFaqs, chadhavaPackages, pujaPerformed, recommendedChadawa } = models;
+const { chadhava, chadhavaBanner, chadhavaFaqs, chadhavaPackages, pujaPerformed, recommendedChadawa,templeHistory } = models;
 
 
 export async function GET(req, { params }) {
   try {
     const chadhavas = await chadhava.findByPk(params.id, {
-      include: [chadhavaBanner, chadhavaFaqs, chadhavaPackages, pujaPerformed, recommendedChadawa ]
+      include: [chadhavaBanner, chadhavaFaqs, chadhavaPackages, pujaPerformed, recommendedChadawa, templeHistory ], order: [["id", "DESC"]],
     });
     if (!chadhavas) {
       return NextResponse.json({ error: "chadhavas not found" }, { status: 404 });
@@ -38,10 +38,9 @@ export async function DELETE(req, { params }) {
 }
 
 
-export async function PUT(req, context) {
+export async function PUT(req, { params }) {
   try {
     const body = await req.json();
-    const { params } = context;
 
     const updatedChadhava = await chadhava.findByPk(params.id);
 
@@ -52,6 +51,7 @@ export async function PUT(req, context) {
     // ✅ Update main table
     await updatedChadhava.update({
       title: body.title,
+      subTitle: body.subTitle,
       slug: body.slug,
       ratingValue: body.ratingValue,
       ratingReviews: body.ratingReviews,
@@ -60,16 +60,20 @@ export async function PUT(req, context) {
       date: body.date,
       pujaDetails: body.pujaDetails,
       templeHistory: body.templeHistory,
+      isActive: body.isActive,
+      isActiveOnHome: body.isActiveOnHome,
     });
 
     // ✅ Update banners
-    if (body.images) {
+    if (body.banners) {
       await chadhavaBanner.destroy({ where: { chadhavaId: updatedChadhava.id } });
+
       await chadhavaBanner.bulkCreate(
-        body.banners?.map(banner => ({
+        body.banners.map((banner) => ({
           image_url: banner.imgUrl,
           type: banner.type,
           position: banner.position,
+          chadhavaId: updatedChadhava.id, // ✅ FK
         }))
       );
     }
@@ -96,6 +100,15 @@ export async function PUT(req, context) {
       );
     }
 
+    // // ✅ Update templeHistory
+    if (body.temple) {
+      await templeHistory.destroy({ where: { chadhavaId: updatedChadhava.id } });
+      await templeHistory.create({
+        ...body.temple,
+        chadhavaId: updatedChadhava.id,
+      });
+    }
+
     // ✅ Update FAQs
     if (body.faqs) {
       await chadhavaFaqs.destroy({ where: { chadhavaId: updatedChadhava.id } });
@@ -120,7 +133,7 @@ export async function PUT(req, context) {
 
     // ✅ Fetch back with associations
     const finalData = await chadhava.findByPk(updatedChadhava.id, {
-      include: [chadhavaBanner, chadhavaPackages, recommendedChadawa, chadhavaFaqs, pujaPerformed],
+      include: [chadhavaBanner, chadhavaPackages, recommendedChadawa, chadhavaFaqs, pujaPerformed, templeHistory ],
     });
 
     return NextResponse.json({

@@ -14,6 +14,7 @@ const ChadhavaForm = () => {
 
   const [formData, setFormData] = useState({
     title: "",
+    subTitle: "",
     slug: "",
     ratingValue: "",
     ratingReviews: "",
@@ -21,7 +22,9 @@ const ChadhavaForm = () => {
     location: "",
     date: new Date(),
     pujaDetails: "",
-    templeHistory: "",
+    isActive: true,
+    isActiveOnHome: false,
+    temple: { templeImg: null, templeName: "", templeHistory: "" },
     packages: [{ packImg: "", title: "", description: "", price: "", currency: "INR", tags: "" }],
     recommendedChadawa: [{ recommendedImg: "", status: "", title: "", location: "", date: new Date(), price: "", currency: "INR" }],
     faqs: [{ icon: null, title: "", description: "" }],
@@ -93,6 +96,16 @@ const ChadhavaForm = () => {
             pujaPerformerImg: localPreview,
           },
         }));
+      } else if (name === "templeImg") {
+        setFormData((prev) => ({
+          ...prev,
+          temple: {
+            ...prev.temple,
+            templeImg: localPreview,
+          },
+        }));
+      } else {
+        alert("Upload failed: ");
       }
 
       // Upload to server
@@ -142,6 +155,14 @@ const ChadhavaForm = () => {
                 pujaPerformerImg: data.storedAs.toString(),
               },
             }));
+          } else if (name === "templeImg") {
+            setFormData((prev) => ({
+              ...prev,
+              temple: {
+                ...prev.temple,
+                templeImg: data.storedAs.toString(),
+              },
+            }));
           }
         } else {
           alert("Upload failed: " + data.error);
@@ -161,8 +182,16 @@ const ChadhavaForm = () => {
             [field]: value, // Dynamically set the correct nested field
           },
         }));
+      } else if (name.startsWith("temple.")) {
+        const field = name.split(".")[1];
+        setFormData((prev) => ({
+          ...prev,
+          temple: {
+            ...prev.temple,
+            [field]: value, // Dynamically set the correct nested field
+          },
+        }));
       } else {
-        // Handle top-level fields
         setFormData((prev) => ({
           ...prev,
           [name]: value,
@@ -178,8 +207,6 @@ const ChadhavaForm = () => {
     // }
   };
 
-
-  console.log("Submitting form data===:", formData);
 
   const slugify = (text) => {
     return text
@@ -313,7 +340,7 @@ const ChadhavaForm = () => {
     <div className="flex-1 p-1 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
       <form
         onSubmit={handleSubmit}
-        className="mx-auto shadow-md rounded-lg p-6 space-y-6 max-h-screen scrollbar-hide"
+        className="mx-auto shadow-md rounded-lg p-6 space-y-6 scrollbar-hide"
       >
         {/* <h1 className="text-2xl font-bold">Puja Form</h1> */}
 
@@ -339,10 +366,18 @@ const ChadhavaForm = () => {
           />
         </div>
 
+        <div>
+          <label className="block font-semibold">Sub Title</label>
+          <input
+            type="text"
+            name="sutTitle"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
         {/* Images (File Upload) */}
 
-         {/* Images (File Upload) */}
-        
                 <div>
                   <label className="block font-semibold mb-2">Banners</label>
         
@@ -497,7 +532,7 @@ const ChadhavaForm = () => {
 
         {/* Puja Details */}
         <div>
-          <label className="block font-semibold">Puja Details</label>
+          <label className="block font-semibold">Chadhava Details</label>
           <textarea
             name="pujaDetails"
             rows="4"
@@ -507,13 +542,59 @@ const ChadhavaForm = () => {
         </div>
 
         {/* Temple History */}
-        <div>
+         <div>
           <label className="block font-semibold">Temple History</label>
-          <textarea
-            name="templeHistory"
-            rows="3"
+          <div className="mb-3">
+            <label className="block font-medium">Image</label>
+
+            {formData.temple.templeImg ? (
+              <div className="relative w-20 h-20">
+                <img
+                  src={formData.temple.templeImg}
+                  alt="temple image"
+                  className="w-20 h-20 object-cover rounded border"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      temple: { ...prev.temple, templeImg: "" },
+                    }))
+                  }
+                  className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ) : (
+              <input
+                type="file"
+                name={`templeImg`}
+                accept="image/*"
+                onChange={handleChange}
+                className="w-20 h-20 border rounded flex items-center justify-center text-sm p-2"
+              />
+            )}
+          </div>
+
+          <input
+            type="text"
+            name={`temple.templeName`}
+            placeholder="name"
+            value={formData.temple.templeName}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded mb-2"
+          />
+
+          <textarea
+            type="text"
+            name={`temple.templeHistory`}
+            placeholder="About temple"
+            rows={4}
+            value={formData.temple.templeHistory}
+            onChange={handleChange}
+            className="w-full border p-2 rounded mb-2"
           />
         </div>
 
@@ -767,38 +848,6 @@ const ChadhavaForm = () => {
                 <Trash2 size={18} />
               </button>}
 
-              <div className="mb-3">
-                <label className="block font-medium">FAQ Icon</label>
-                {faq.icon ? (
-                  <div className="relative w-15 h-15">
-                    <img
-                      src={faq.icon}
-                      alt={`FAQ Icon ${index}`}
-                      className="w-15 h-15 object-cover rounded border"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = [...formData?.faqs];
-                        updated[index].icon = null;
-                        setFormData({ ...formData, faqs: updated });
-                      }}
-                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <input
-                    type="file"
-                    name="icon"
-                    accept="image/*"
-                    onChange={(e) => handleChange(e, index)} // ✅ index now works
-                    className="w-15 h-15 border rounded flex items-center justify-center text-sm p-2"
-                  />
-                )}
-              </div>
-
               <input
                 type="text"
                 placeholder="Title"
@@ -898,6 +947,51 @@ const ChadhavaForm = () => {
           />
         </div>
 
+        {/* Toggle Switches */}
+      <div className="grid grid-cols-2 gap-6 mt-4">
+
+        {/* isActive */}
+        <div className="flex items-center justify-between border p-3 rounded">
+          <label className="font-semibold">Is Active</label>
+          <button
+            type="button"
+            onClick={() =>
+              setFormData((prev) => ({ ...prev, isActive: !prev.isActive }))
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+              formData.isActive ? "bg-green-600" : "bg-gray-600"
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                formData.isActive ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* isActiveOnHome */}
+        <div className="flex items-center justify-between border p-3 rounded">
+          <label className="font-semibold">Show on Home</label>
+          <button
+            type="button"
+            onClick={() =>
+              setFormData((prev) => ({ ...prev, isActiveOnHome: !prev.isActiveOnHome }))
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+              formData.isActiveOnHome ? "bg-green-600" : "bg-gray-600"
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                formData.isActiveOnHome ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+
+      </div>
+
 
         {/* Submit */}
         <button
@@ -907,13 +1001,13 @@ const ChadhavaForm = () => {
           Submit
         </button>
 
-        <button
+        {/* <button
           type="button"
           onClick={(e) => exportStyledExcel(e)}
           className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
         >
           Excel
-        </button>
+        </button> */}
       </form>
     </div>
   );

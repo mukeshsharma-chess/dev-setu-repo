@@ -1,4 +1,5 @@
 // src/models/chadhava.js
+
 export default (sequelize, DataTypes) => {
   const chadhava = sequelize.define("chadhava", {
     id: {
@@ -13,6 +14,11 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       unique: true,
       field: "title",
+    },
+    subTitle: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "sub_title",
     },
     slug: {
       type: DataTypes.STRING,
@@ -50,10 +56,17 @@ export default (sequelize, DataTypes) => {
       allowNull: true,
       field: "chadhava_details",
     },
-    templeHistory: {
-      type: DataTypes.TEXT,
+    isActive: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      field: "temple_history",
+      defaultValue: true,
+      field: "isActive",
+    },
+    isActiveOnHome: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+      field: "isActiveOnHome",
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -73,6 +86,7 @@ export default (sequelize, DataTypes) => {
     chadhava.hasMany(models.chadhavaFaqs, { foreignKey: "chadhavaId", onDelete: "CASCADE" });
     chadhava.hasMany(models.chadhavaBanner, { foreignKey: "chadhavaId", onDelete: "CASCADE" });
     chadhava.hasMany(models.pujaPerformed, { foreignKey: "chadhavaId", onDelete: "CASCADE" });
+    chadhava.hasMany(models.templeHistory, { foreignKey: "chadhavaId", onDelete: "CASCADE" });
   };
 
   return chadhava;

@@ -12,6 +12,7 @@ const PujaForm = () => {
 
   const [formData, setFormData] = useState({
     title: "",
+    subTitle: "",
     slug: "",
     ratingValue: "",
     ratingReviews: "",
@@ -19,10 +20,12 @@ const PujaForm = () => {
     location: "",
     date: new Date(),
     pujaDetails: "",
-    templeHistory: "",
+    isActive: true,
+    isActiveOnHome: false,
     packages: [{ packImg: null, packageType: "", packagePrice: "" }],
     offerings: { offerimg: [null], offers: [{ title: "", description: "" }] },
     faqs: [{ icon: null, title: "", description: "" }],
+    temple: { templeImg: null, templeName: "", templeHistory: "" },
     banners: [{imgUrl: null, type: "", position: 0}],
   });
 
@@ -82,6 +85,16 @@ const PujaForm = () => {
             offerings: { ...prev.offerings, offerimg: updatedImgs },
           };
         });
+      } else if (name === "templeImg") {
+        setFormData((prev) => ({
+          ...prev,
+          temple: {
+            ...prev.temple,
+            templeImg: localPreview,
+          },
+        }));
+      } else {
+        alert("Upload failed: ");
       }
 
       // Upload to server
@@ -125,6 +138,14 @@ const PujaForm = () => {
                 offerings: { ...prev.offerings, offerimg: updatedImgs },
               };
             });
+          } else if (name === "templeImg") {
+            setFormData((prev) => ({
+              ...prev,
+              temple: {
+                ...prev.temple,
+                templeImg: data.storedAs.toString(),
+              },
+            }));
           }
         } else {
           alert("Upload failed: " + data.error);
@@ -133,7 +154,16 @@ const PujaForm = () => {
         console.error("Upload error:", err);
         alert("Error while uploading file");
       }
-    } else {
+    } else if (name.startsWith("temple.")) {
+        const field = name.split(".")[1];
+        setFormData((prev) => ({
+          ...prev,
+          temple: {
+            ...prev.temple,
+            [field]: value, // Dynamically set the correct nested field
+          },
+        })); 
+      } else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -158,7 +188,7 @@ const PujaForm = () => {
         dispatch(requestPujaDataAction());
       } else {
         console.log("Error:", res.error);
-        alert(res.error)
+        alert(res.message)
       }
     }).catch((e) => {
       console.log(`error`, e)
@@ -171,7 +201,7 @@ const PujaForm = () => {
     <div className="flex-1 p-1 pb-3 overflow-y-auto max-h-screen scrollbar-hide">
       <form
         onSubmit={handleSubmit}
-        className="mx-auto shadow-md rounded-lg p-6 space-y-6 max-h-screen scrollbar-hide"
+        className="mx-auto shadow-md rounded-lg p-6 space-y-6 scrollbar-hide"
       >
         {/* <h1 className="text-2xl font-bold">Puja Form</h1> */}
 
@@ -192,6 +222,16 @@ const PujaForm = () => {
             type="text"
             name="slug"
             value={formData?.slug}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-semibold">Sub Title</label>
+          <input
+            type="text"
+            name="subTitle"
             onChange={handleChange}
             className="w-full border p-2 rounded"
           />
@@ -357,14 +397,60 @@ const PujaForm = () => {
           />
         </div>
 
-        {/* Temple History */}
+         {/* Temple History */}
         <div>
           <label className="block font-semibold">Temple History</label>
-          <textarea
-            name="templeHistory"
-            rows="3"
+          <div className="mb-3">
+            <label className="block font-medium">Image</label>
+
+            {formData.temple.templeImg ? (
+              <div className="relative w-20 h-20">
+                <img
+                  src={formData.temple.templeImg}
+                  alt="temple image"
+                  className="w-20 h-20 object-cover rounded border"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      temple: { ...prev.temple, templeImg: "" },
+                    }))
+                  }
+                  className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ) : (
+              <input
+                type="file"
+                name={`templeImg`}
+                accept="image/*"
+                onChange={handleChange}
+                className="w-20 h-20 border rounded flex items-center justify-center text-sm p-2"
+              />
+            )}
+          </div>
+
+          <input
+            type="text"
+            name={`temple.templeName`}
+            placeholder="name"
+            value={formData.temple.templeName}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded mb-2"
+          />
+
+          <textarea
+            type="text"
+            name={`temple.templeHistory`}
+            placeholder="About temple"
+            rows={4}
+            value={formData.temple.templeHistory}
+            onChange={handleChange}
+            className="w-full border p-2 rounded mb-2"
           />
         </div>
 
@@ -617,38 +703,6 @@ const PujaForm = () => {
                 <Trash2 size={18} />
               </button>}
 
-              <div className="mb-3">
-                <label className="block font-medium">FAQ Icon</label>
-                {faq.icon ? (
-                  <div className="relative w-15 h-15">
-                    <img
-                      src={faq.icon}
-                      alt={`FAQ Icon ${index}`}
-                      className="w-15 h-15 object-cover rounded border cursor-pointer"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = [...formData?.faqs];
-                        updated[index].icon = null;
-                        setFormData({ ...formData, faqs: updated });
-                      }}
-                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 cursor-pointer"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <input
-                    type="file"
-                    name="icon"
-                    accept="image/*"
-                    onChange={(e) => handleChange(e, index)} // ✅ index now works
-                    className="w-15 h-15 border rounded flex items-center justify-center text-sm p-2 cursor-pointer"
-                  />
-                )}
-              </div>
-
               <input
                 type="text"
                 placeholder="Title"
@@ -685,6 +739,53 @@ const PujaForm = () => {
             + Add FAQ
           </button>
         </div>
+
+       {/* Toggle Switches */}
+      <div className="grid grid-cols-2 gap-6 mt-4">
+
+        {/* isActive */}
+        <div className="flex items-center justify-between border p-3 rounded">
+          <label className="font-semibold">Is Active</label>
+          <button
+            type="button"
+            onClick={() =>
+              setFormData((prev) => ({ ...prev, isActive: !prev.isActive }))
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+              formData.isActive ? "bg-green-600" : "bg-gray-600"
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                formData.isActive ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* isActiveOnHome */}
+        <div className="flex items-center justify-between border p-3 rounded">
+          <label className="font-semibold">Show on Home</label>
+          <button
+            type="button"
+            onClick={() =>
+              setFormData((prev) => ({ ...prev, isActiveOnHome: !prev.isActiveOnHome }))
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+              formData.isActiveOnHome ? "bg-green-600" : "bg-gray-600"
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                formData.isActiveOnHome ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+
+      </div>
+
+
 
         {/* Submit */}
         <button

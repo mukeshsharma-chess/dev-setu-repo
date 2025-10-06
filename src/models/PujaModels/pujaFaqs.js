@@ -8,7 +8,7 @@ export default (sequelize, DataTypes) => {
     },
     icon: {
       type: DataTypes.STRING,
-      allowNull: false,         // ✅ हर FAQ में icon required है
+      allowNull: false,
       field: "icon",
     },
     question: {

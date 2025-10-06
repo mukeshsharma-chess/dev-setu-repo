@@ -14,6 +14,11 @@ export default (sequelize, DataTypes) => {
       unique: true,
       field: "title",
     },
+    subTitle: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "sub_title",
+    },
     slug: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -50,10 +55,17 @@ export default (sequelize, DataTypes) => {
       allowNull: true,
       field: "puja_details",
     },
-    templeHistory: {
-      type: DataTypes.TEXT,
+    isActive: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      field: "temple_history",
+      defaultValue: true,
+      field: "isActive",
+    },
+    isActiveOnHome: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+      field: "isActiveOnHome",
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -72,6 +84,7 @@ export default (sequelize, DataTypes) => {
     Puja.hasMany(models.pujaOfferings, { foreignKey: "pujaId", onDelete: "CASCADE" });
     Puja.hasMany(models.pujaFaqs, { foreignKey: "pujaId", onDelete: "CASCADE" });
     Puja.hasMany(models.pujaImages, { foreignKey: "pujaId", onDelete: "CASCADE" });
+    Puja.hasMany(models.templeHistory, { foreignKey: "pujaId", onDelete: "CASCADE" });
   };
 
   return Puja;
