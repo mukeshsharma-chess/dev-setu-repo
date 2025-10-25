@@ -12,16 +12,23 @@
 // export default nextConfig;
 
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   i18n: {
     locales: ['en', 'in'],
     defaultLocale: 'en',
   },
 
-  // Exclude API from i18n routing
-  experimental: {
-    excludeDefaultLocaleFromAPI: true,
+  async rewrites() {
+    return [
+      {
+        source: '/:locale(en|in)/api/:path*',
+        destination: '/api/:path*',
+      },
+    ];
   },
 };
+
+
 
 export default nextConfig;
