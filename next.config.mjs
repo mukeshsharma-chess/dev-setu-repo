@@ -12,9 +12,30 @@
 // export default nextConfig;  
 
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
+  async redirects() {
+    return [
+      // ✅ Remove locale prefixes (en/in) from API routes
+      {
+        source: '/:locale(en|in)/api/:path*',
+        destination: '/api/:path*',
+        permanent: true,
+      },
+
+      {
+        source: '/:locale(en|in)/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
+
+    ];
+  },
+
   reactStrictMode: true,
 };
+
+
 
 export default nextConfig; 
 
