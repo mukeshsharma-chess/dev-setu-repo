@@ -5,24 +5,13 @@ import { endpoints } from './endpoints';
 
 // const token = sessionStorage.getItem("token")
 
-function setCorsHeaders() {
-  return {
-    'Access-Control-Allow-Origin': '*', // Production में अपने frontend URL डालें
-    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  };
-}
-
 
 const fetchHeader = {
-    ...setCorsHeaders(),
     "Content-Type": "application/json",
     "Accept": "application/json, text/plain, */*",
 }
 
 const fetchHeaderFile = { "Content-Type": "application/json", "mimeType": "multipart/form-data" }
-
-
 
 export default class Api {
    
@@ -33,7 +22,6 @@ export default class Api {
         let opt = {
             method: method,
             headers: {
-                ...setCorsHeaders(),
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token ? token : ""}`,
                 "Accept": "application/json, text/plain, */*",
@@ -79,7 +67,6 @@ export default class Api {
         let opt = {
             method: method,
              headers: {
-                ...setCorsHeaders(),
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token ? token : ""}`,
                 "Accept": "application/json, text/plain, */*",
