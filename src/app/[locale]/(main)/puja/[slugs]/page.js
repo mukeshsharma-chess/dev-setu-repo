@@ -11,6 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPujaDetailPageAction } from "@/redux/actions/pujaActions";
 import CountdownTimer from "@/components/CountdownTimer";
 import LazyImage from "@/components/Atom/LazyImage";
+import PageLaoder from "@/components/Atom/loader/pageLaoder";
+import PujaPackages from "@/components/PujaPackages/index.js";
+import { useWithLang } from "../../../../../../helper/useWithLang";
+import { useRouter } from "next/navigation";
+import { addNewCartAction, addPackageAction } from "@/redux/actions/cartActions";
+import { formatDate } from "../../../../../../utils/localstorage";
+
 
 const pujaData = {
     "benefits": [
@@ -45,7 +52,16 @@ export default function PujaDetailsPage() {
     const dispatch = useDispatch();
 
 
+    const router = useRouter();
+    const withLang = useWithLang();
+
+    const handlaRedirect = (slug) => {
+        router.push(withLang(`/puja-cart/`))
+    }
+
+
     const { pujaDetailPage } = useSelector((state) => state.pujas);
+    const { isLoading } = useSelector((state) => state.loader)
 
     // Create refs for each section
     const aboutRef = useRef(null);
@@ -59,6 +75,8 @@ export default function PujaDetailsPage() {
     const [activeTab, setActiveTab] = useState("about");
 
     const [openFaqIndex, setOpenFaqIndex] = useState(null);
+    const [cartItem, setCartItem] = useState(null);
+
 
     const tabs = [
         { id: "about", label: "About Puja", ref: aboutRef },
@@ -109,7 +127,13 @@ export default function PujaDetailsPage() {
         setOpenFaqIndex(openFaqIndex === index ? null : index);
     };
 
-    const formattedDate = moment(pujaDetailPage?.['date']).format("D MMMM");
+
+    const handleAddPackages = (pkg) => {
+        dispatch(addPackageAction(pkg));
+        setCartItem(pkg)
+    };
+
+    const formattedDate = formatDate(pujaDetailPage?.['date'], 'full');
 
 
     return (
@@ -118,34 +142,36 @@ export default function PujaDetailsPage() {
             <Container>
                 {/* Banner */}
                 <div className="bg-gray-50 p-4 lg:p-8 flex flex-col lg:flex-row gap-6">
-                    <div className="flex-1 w-[600px] h-[400px] relative">
-                        <PageDetailHeroSlider heroSlides={pujaDetailPage?.['pujaImages']} />
-                    </div>
+                    {isLoading ? <PageLaoder /> : <div className="flex-1 w-[600px] h-[400px] relative">
+                        <PageDetailHeroSlider heroSlides={pujaDetailPage?.['pujaBanners']} />
+                    </div>}
                     <div className="flex-1 space-y-3">
                         <h1 className="text-2xl lg:text-3xl font-bold text-gray-800">
                             {pujaDetailPage?.['title']}
                         </h1>
                         <p className="text-2xl text-gray-600">{pujaDetailPage?.['subTitle']}</p>
 
-                        <p className="text-2xl font-semibold text-orange-600">
+                        <p className="text-[18px] font-semibold">
                             {pujaDetailPage?.['location']}
                         </p>
-                        <p className="text-2xl font-semibold text-orange-600">
-                            {`${formattedDate}, ${pujaDetailPage?.['specialDay']}`}
+                        <p className="text-[18px] font-semibold text-orange-600">
+                            {`${formattedDate} ${pujaDetailPage?.['specialDay']}`}
                         </p>
 
                         <CountdownTimer date={pujaDetailPage?.['date']} CountdownHeading={"Puja booking will close in:"} />
 
                         <div className="flex items-center mb-2">
                             <div className="flex -space-x-3">
-                                <LazyImage src="/images/individual.webp" alt="devotee" width={35} height={35} className="rounded-full border-3 border-white" />
-                                <LazyImage src="/images/couple.webp" alt="devotee" width={35} height={35} className="rounded-full border-3 border-white" />
-                                <LazyImage src="/images/individual.webp" alt="devotee" width={35} height={35} className="rounded-full border-3 border-white" />
-                                <LazyImage src="/images/couple.webp" alt="devotee" width={35} height={35} className="rounded-full border-3 border-white" />
-                                <LazyImage src="/images/individual.webp" alt="devotee" width={35} height={35} className="rounded-full border-3 border-white" />
+                                <LazyImage src="/images/individual.webp" alt="devotee" width={35} height={25} className="rounded-full border-3 border-white" />
+                                <LazyImage src="/images/couple.webp" alt="devotee" width={35} height={25} className="rounded-full border-3 border-white" />
+                                <LazyImage src="/images/individual.webp" alt="devotee" width={35} height={25} className="rounded-full border-3 border-white" />
+                                <LazyImage src="/images/couple.webp" alt="devotee" width={35} height={25} className="rounded-full border-3 border-white" />
+                                <LazyImage src="/images/individual.webp" alt="devotee" width={35} height={25} className="rounded-full border-3 border-white" />
                             </div>
                         </div>
-
+                        <span className="text-2xl">
+                            Till now <strong className="text-orange-600">3,00,000+ Devoteeshave</strong> participated in Pujas conducted by Sri Mandir Puja Seva.
+                        </span>
                         <div className="flex items-center gap-4">
 
                             <button className="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2 rounded-lg">
@@ -183,9 +209,10 @@ export default function PujaDetailsPage() {
                     <section ref={benefitsRef}>
                         <h2 className="text-xl font-semibold mb-3">Puja Benefits</h2>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {pujaData.benefits.map((b, i) => (
-                                <div key={i} className="p-4 border rounded-lg shadow-sm">
-                                    🙏 {b}
+                            {pujaDetailPage?.['pujaBenefits'].map((b) => (
+                                <div key={b.id} className="p-4 border rounded-lg shadow-sm">
+                                    <strong>🙏 {b.title}</strong>
+                                    <p>{b.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -211,7 +238,7 @@ export default function PujaDetailsPage() {
                         <div className="flex flex-col md:flex-row items-start gap-6">
                             {/* Image Section */}
                             <div className="w-full md:w-1/2">
-                                <Image
+                                <LazyImage
                                     src={pujaDetailPage?.['templeHistories'][0]?.['templeImg']}
                                     alt="Temple"
                                     width={800}
@@ -232,23 +259,8 @@ export default function PujaDetailsPage() {
 
                     {/* Packages */}
                     <section ref={packagesRef}>
-                        <h2 className="text-xl font-semibold mb-3">Select Puja Package</h2>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {pujaDetailPage?.['pujaPackages'].map((pkg) => (
-                                <div key={pkg.id} className="p-6 border rounded-xl shadow hover:shadow-lg">
-                                    <LazyImage
-                                        src={pkg.packImg}
-                                        alt={pkg.packageType}
-                                        height={100}
-                                    />
-                                    <h3 className="text-lg font-semibold">{pkg.packageType}</h3>
-                                    <p className="text-orange-600 text-xl font-bold mt-2">{pkg.packagePrice}</p>
-                                    <button className="mt-4 w-full bg-orange-600 text-white py-2 rounded-lg">
-                                        Participate →
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+                        {/* <h2 className="text-xl font-semibold mb-3">Select Puja Package</h2> */}
+                        <PujaPackages pujaPackages={pujaDetailPage?.['pujaPackages']} onAddToCart={handleAddPackages} />
                     </section>
 
                     {/* Reviews */}
@@ -288,6 +300,24 @@ export default function PujaDetailsPage() {
 
                 </div>
             </Container>
+
+            <div className="space-y-10">
+                {/* Add to Cart Button */}
+                {cartItem && (
+                    <div className="sticky bottom-0 bg-white border-t shadow-md p-4 flex justify-between items-center">
+                        <div>
+                            <p className="font-semibold">{cartItem.packageType}</p>
+                            <p className="text-green-600 font-bold">₹{cartItem.packagePrice}</p>
+                        </div>
+                        <button
+                            className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 cursor-pointer"
+                            onClick={handlaRedirect}
+                        >
+                            Participate now
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

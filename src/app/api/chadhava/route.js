@@ -1,3 +1,5 @@
+
+
 import { NextResponse } from "next/server";
 import models from "@/models";
 
@@ -47,9 +49,14 @@ export async function POST(req) {
         isActive: body.isActive,
         isActiveOnHome: body.isActiveOnHome,
 
+        isRecommended: body.isRecommended,
+        commonFaqs: body.commonFaqs,
+        isActivePandit: body.isActivePandit,
+
+
         // ✅ Use correct association keys
         chadhavaPackages: body.packages || [],
-        recommendedChadawas: body.recommendedChadawa.map(item => ({
+        recommendedChadawas: body.isRecommended && body.recommendedChadawa.map(item => ({
           title: item.title,
           recommendedImg: item.recommendedImg,
           status: item.status,
@@ -58,7 +65,7 @@ export async function POST(req) {
           date: item.date,
           price: item.price
         })) || [],
-        chadhavaFaqs: body.faqs?.map(f => ({
+        chadhavaFaqs: !body.commonFaqs && body.faqs?.map(f => ({
           question: f.title,
           answer: f.description,
         })) || [],
@@ -77,7 +84,7 @@ export async function POST(req) {
             position: banner.position,
           })) || [],
 
-        pujaPerformeds: body.pujaPerformedBy || [],
+        pujaPerformeds: body.isActivePandit && body.pujaPerformedBy || [],
       },
       {
         include: [

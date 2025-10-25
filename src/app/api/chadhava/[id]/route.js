@@ -1,3 +1,5 @@
+
+
 import { NextResponse } from "next/server";
 import models from "@/models";
 
@@ -62,6 +64,11 @@ export async function PUT(req, { params }) {
       templeHistory: body.templeHistory,
       isActive: body.isActive,
       isActiveOnHome: body.isActiveOnHome,
+
+      isRecommended: body.isRecommended,
+      commonFaqs: body.commonFaqs,
+      isActivePandit: body.isActivePandit,
+        
     });
 
     // ✅ Update banners
@@ -90,7 +97,8 @@ export async function PUT(req, { params }) {
     }
 
     // ✅ Update recommended chadhawas
-    if (body.recommendedChadawa) {
+
+    if (body.isRecommended && body.recommendedChadawa) {
       await recommendedChadawa.destroy({ where: { chadhavaId: updatedChadhava.id } });
       await recommendedChadawa.bulkCreate(
         body.recommendedChadawa.map((r) => ({
@@ -110,7 +118,7 @@ export async function PUT(req, { params }) {
     }
 
     // ✅ Update FAQs
-    if (body.faqs) {
+    if (!body.commonFaqs && body.faqs) {
       await chadhavaFaqs.destroy({ where: { chadhavaId: updatedChadhava.id } });
       await chadhavaFaqs.bulkCreate(
         body.faqs.map((f) => ({
@@ -123,7 +131,7 @@ export async function PUT(req, { params }) {
     }
 
     // ✅ Update Puja Performed By (assuming only one)
-    if (body.pujaPerformedBy) {
+    if (body.isActivePandit && body.pujaPerformedBy) {
       await pujaPerformed.destroy({ where: { chadhavaId: updatedChadhava.id } });
       await pujaPerformed.create({
         ...body.pujaPerformedBy,

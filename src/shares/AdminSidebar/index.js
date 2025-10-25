@@ -66,7 +66,25 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                href="/admin/articles"
+                href="/admin/aartis"
+                className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
+              >
+                <Gift size={18} />
+                {open && <span>Aartis</span>}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/aartis/list"
+                className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
+              >
+                <List size={18} />
+                {open && <span>Aartis List</span>}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/aartis/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
                 <Gift size={18} />
@@ -98,6 +116,24 @@ const Sidebar = () => {
               >
                 <List size={18} />
                 {open && <span>Testimonials List</span>}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/faqs"
+                className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
+              >
+                <Gift size={18} />
+                {open && <span>FAQs</span>}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/puja-package"
+                className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
+              >
+                <Gift size={18} />
+                {open && <span>Common Packages & Offerings</span>}
               </Link>
             </li>
           </ul>

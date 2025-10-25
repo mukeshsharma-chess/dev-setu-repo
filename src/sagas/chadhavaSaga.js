@@ -15,7 +15,6 @@ export function* fetchAllChadhavaSaga({ payload, resolve }) {
         yield put({ type: START_LOADING, isLoading: true })
         let response = yield api.GetAllChadhava(payload);
 
-        console.log("fetchAllChadhavaSaga", response)
         const {data, status} = response;
 
         if (status === 200) {
@@ -24,14 +23,13 @@ export function* fetchAllChadhavaSaga({ payload, resolve }) {
             yield put({ type: RESET_LOADER, isLoading: false })
         }
         else {
-            console.log("CHADHAVA_DATA_FAILED", data);
             yield put({ type: CHADHAVA_DATA_FAILED, payload: data })
             resolve && resolve(response)
             yield put({ type: RESET_LOADER, isLoading: false })
         }
     } catch (e) {
         yield put({ type: CHADHAVA_DATA_FAILED, payload: e })
-
+        yield put({ type: RESET_LOADER, isLoading: false })
     }
 }
 
@@ -40,7 +38,6 @@ export function* fetchAllWebChadhavaSaga({ payload, resolve }) {
         yield put({ type: START_LOADING, isLoading: true })
         let response = yield api.GetAllWebChadhava(payload);
 
-        console.log("fetchAllChadhavaSaga", response)
         const {data, status} = response;
 
         if (status === 200) {
@@ -49,14 +46,13 @@ export function* fetchAllWebChadhavaSaga({ payload, resolve }) {
             yield put({ type: RESET_LOADER, isLoading: false })
         }
         else {
-            console.log("CHADHAVA_WEB_DATA_FAILED", data);
             yield put({ type: CHADHAVA_WEB_DATA_FAILED, payload: data })
             resolve && resolve(response)
             yield put({ type: RESET_LOADER, isLoading: false })
         }
     } catch (e) {
         yield put({ type: CHADHAVA_WEB_DATA_FAILED, payload: e })
-
+        yield put({ type: RESET_LOADER, isLoading: false })
     }
 }
 
@@ -73,14 +69,13 @@ export function* addNewChadhavaSaga({ payload, resolve }) {
             yield put({ type: RESET_LOADER, isLoading: false })
         }
         else {
-            console.log("ADD_NEW_CHADHAVA_DATA_FAILED", data);
             yield put({ type: ADD_NEW_CHADHAVA_DATA_FAILED, payload: data })
             resolve && resolve(response)
             yield put({ type: RESET_LOADER, isLoading: false })
         }
     } catch (e) {
         yield put({ type: ADD_NEW_CHADHAVA_DATA_FAILED, payload: e })
-
+        yield put({ type: RESET_LOADER, isLoading: false })
     }
 }
 
@@ -98,14 +93,13 @@ export function* chadhavaWebDetialSaga({ payload, resolve }) {
             yield put({ type: RESET_LOADER, isLoading: false })
         }
         else {
-            console.log("CHADHAVA_WEB_DETAILS_DATA_FAILED", data);
             yield put({ type: CHADHAVA_WEB_DETAILS_DATA_FAILED, payload: data })
             resolve && resolve(response)
             yield put({ type: RESET_LOADER, isLoading: false })
         }
     } catch (e) {
         yield put({ type: CHADHAVA_WEB_DETAILS_DATA_FAILED, payload: e })
-
+        yield put({ type: RESET_LOADER, isLoading: false })
     }
 }
 
@@ -123,14 +117,13 @@ export function* chadhavaDetialSaga({ payload, resolve }) {
             yield put({ type: RESET_LOADER, isLoading: false })
         }
         else {
-            console.log("CHADHAVA_DETAILS_DATA_FAILED", data);
             yield put({ type: CHADHAVA_DETAILS_DATA_FAILED, payload: data })
             resolve && resolve(response)
             yield put({ type: RESET_LOADER, isLoading: false })
         }
     } catch (e) {
         yield put({ type: CHADHAVA_DETAILS_DATA_FAILED, payload: e })
-
+        yield put({ type: RESET_LOADER, isLoading: false })
     }
 }
 
@@ -148,14 +141,13 @@ export function* updateChadhavaSaga({ payload, resolve }) {
             yield put({ type: RESET_LOADER, isLoading: false })
         }
         else {
-            console.log("UPDATE_CHADHAVA_DATA_FAILED", data);
             yield put({ type: UPDATE_CHADHAVA_DATA_FAILED, payload: data })
             resolve && resolve(response)
             yield put({ type: RESET_LOADER, isLoading: false })
         }
     } catch (e) {
         yield put({ type: UPDATE_CHADHAVA_DATA_FAILED, payload: e })
-
+        yield put({ type: RESET_LOADER, isLoading: false })
     }
 }
 
@@ -172,13 +164,12 @@ export function* deleteChadhavaSaga({ payload, resolve }) {
             yield put({ type: RESET_LOADER, isLoading: false })
         }
         else {
-            console.log("DELETE_CHADHAVA_DATA_FAILED", data);
             yield put({ type: DELETE_CHADHAVA_DATA_FAILED, payload: data })
             resolve && resolve(response)
             yield put({ type: RESET_LOADER, isLoading: false })
         }
     } catch (e) {
         yield put({ type: DELETE_CHADHAVA_DATA_FAILED, payload: e })
-
+        yield put({ type: RESET_LOADER, isLoading: false })
     }
 }

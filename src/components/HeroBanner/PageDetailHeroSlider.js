@@ -23,13 +23,15 @@ const PageDetailHeroSlider = ({ heroSlides }) => {
         }}
         className="mx-auto rounded-lg shadow"
       >
-        {heroSlides?.map((item) => (
+        {heroSlides?.
+        filter((item) => item.position !== 1).
+        map((item) => (
           <SwiperSlide key={item.id}>
               <LazyImage
                 src={item.imageUrl}
                 alt={item.id+ "puja image"}
                 className="object-cover"
-                width={600}
+                width={660}
                 height={400}
               />
           </SwiperSlide>

@@ -1,62 +1,41 @@
 // src/app/chadhava/page.js
 
 "use client";
+import PageLaoder from "@/components/Atom/loader/pageLaoder";
+import SectionLoader from "@/components/Atom/loader/sectionLoader";
 import ChadhavaCard from "@/components/Cards/chadhavaCard";
 import { requestWebChadhavaAction } from "@/redux/actions/chadhavaAction";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useWithLang } from "../../../../../helper/useWithLang";
 
-const cards = [
-  {
-    id: 1,
-    title: "Offer Chadhava at Tirupati Balaji Temple",
-    desc: "Make your divine offerings at Tirupati Balaji Temple easily through our platform.",
-    img: "",
-  },
-  {
-    id: 2,
-    title: "Offer Chadhava at Shirdi Sai Baba Temple",
-    desc: "Send your offerings to the holy shrine of Shirdi Sai Baba.",
-    img: "",
-  },
-  {
-    id: 3,
-    title: "Offer Chadhava at Kashi Vishwanath Temple",
-    desc: "Participate in sacred rituals by sending offerings to Kashi Vishwanath.",
-    img: "",
-  },
-    {
-    id: 4,
-    title: "Offer Chadhava at Tirupati Balaji Temple",
-    desc: "Make your divine offerings at Tirupati Balaji Temple easily through our platform.",
-    img: "",
-  },
-  {
-    id: 5,
-    title: "Offer Chadhava at Shirdi Sai Baba Temple",
-    desc: "Send your offerings to the holy shrine of Shirdi Sai Baba.",
-    img: "",
-  },
-  {
-    id: 6,
-    title: "Offer Chadhava at Kashi Vishwanath Temple",
-    desc: "Participate in sacred rituals by sending offerings to Kashi Vishwanath.",
-    img: "",
-  }
-];
 
 const ChadhavaPage = () => {
 
   const dispatch = useDispatch(); 
 
   const { heroBanner,chadhavaCard } = useSelector((state) => state.chadhavas)
+  const { isLoading } = useSelector((state) => state.loader)
+
+  
+  const router = useRouter();
+  const withLang = useWithLang();
+
+  const handlaRedirect = (base,slug) => {
+    router.push(withLang(`/${base}/${slug}`))
+  }
+
 
   useEffect(() => {
     dispatch(requestWebChadhavaAction())
   },[dispatch])
 
-  console.log("heroBanner,chadhavaCard ", heroBanner,chadhavaCard )
+
+  if(isLoading){
+    return<PageLaoder />
+  }
 
   return (
     <main className="bg-gray-50">
@@ -113,7 +92,7 @@ const ChadhavaPage = () => {
 
         {/* ✅ Card Grid */}
         <div className="py-8">
-          <ChadhavaCard chadhava={chadhavaCard} viewmore={false} />
+           <ChadhavaCard handlaRedirect={handlaRedirect} withLang={withLang} chadhava={chadhavaCard} viewmore={false} />
         </div>
       </section>
     </main>

@@ -5,18 +5,22 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import LazyImage from "../Atom/LazyImage";
 import { useRouter } from "next/navigation";
+import { useWithLang } from '../../../helper/useWithLang';
+
+
 
 
 const HeroBanner = ({ slides }) => {
 
   const router = useRouter();
+  const withLang = useWithLang();
 
-  
+
   const handleExplore = (type,slug) => {
     if (type === "puja"){
-      router.push(`/puja/${slug}`)
+      router.push(withLang(`/puja/${slug}`))
     }else if(type === "chadhava"){
-      router.push(`/chadhava/${slug}`)
+      router.push(withLang(`/chadhava/${slug}`))
     }
   }
 
@@ -29,18 +33,16 @@ const HeroBanner = ({ slides }) => {
           prevEl: ".swiper-button-prev",
         }}
         pagination={{ clickable: true }}
-        autoplay={{ delay: 5000 }}
-        // autoplay={false}
+        // autoplay={{ delay: 5000 }}
+        autoplay={false}
         loop 
       >
-        {slides?.map((slide) => {
+        {slides?.map((slide,index) => {
 
           const {title, id, slug, type, banners} = slide
 
           return <SwiperSlide key={id}>
-            <div className="h-[600px]">
-              
-              {/* Background Image */}
+            <div className="h-[500px] cursor-pointer" onClick={() => handleExplore(type, slug)}>
               {
                 banners?.map((item) => {
                   return <LazyImage
@@ -64,12 +66,9 @@ const HeroBanner = ({ slides }) => {
                   {slide.desc}
                 </p>
                 <div className="mt-6 flex justify-start gap-4">
-                  <button className=" cursor-pointer px-6 py-2 border border-[var(--forcast)] rounded-md bg-[var(--forcast)] text-black font-medium hover:bg-gray-100 transition">
-                    Download App
-                  </button>
-                  <button onClick={() => handleExplore(type, slug)} className=" cursor-pointer px-6 py-2 border border-[var(--forcast)] rounded-md font-medium hover:bg-[var(--forcast)] hover:text-[var(--primary)] transition">
+                  {/* <button onClick={() => handleExplore(type, slug)} className=" cursor-pointer px-6 py-2 border border-[var(--forcast)] rounded-md font-medium hover:bg-[var(--forcast)] hover:text-[var(--primary)] transition">
                     Explore More
-                  </button>
+                  </button> */}
                 </div>
               </div>
 
