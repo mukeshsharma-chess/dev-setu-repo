@@ -17,8 +17,8 @@ const ChadhavaForm = () => {
     title: "",
     subTitle: "",
     slug: "",
-    ratingValue: "",
-    ratingReviews: "",
+    // ratingValue: "",
+    // ratingReviews: "",
     specialDay: "",
     location: "",
     date: new Date(),
@@ -28,7 +28,7 @@ const ChadhavaForm = () => {
     isRecommended: false,
     commonFaqs: true,
     isActivePandit: false,
-    temple: { templeImg: null, templeName: "", templeHistory: "" },
+    // temple: { templeImg: null, templeName: "", templeHistory: "" },
     packages: [{ packImg: "", title: "", description: "", price: "", currency: "INR", tags: "" }],
     recommendedChadawa: [{ recommendedImg: "", status: "", title: "", location: "", date: new Date(), price: "", currency: "INR" }],
     faqs: [{ icon: null, title: "", description: "" }],
@@ -483,7 +483,7 @@ const ChadhavaForm = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block font-semibold">Rating Value</label>
             <input
               type="number"
@@ -501,7 +501,7 @@ const ChadhavaForm = () => {
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
-          </div>
+          </div> */}
 
         </div>
 
@@ -543,7 +543,7 @@ const ChadhavaForm = () => {
         </div>
 
         {/* Temple History */}
-         <div>
+         {/* <div>
           <label className="block font-semibold">Temple History</label>
           <div className="mb-3">
             <label className="block font-medium">Image</label>
@@ -597,7 +597,7 @@ const ChadhavaForm = () => {
             onChange={handleChange}
             className="w-full border p-2 rounded mb-2"
           />
-        </div>
+        </div> */}
 
         {/* Packages */}
         <div>

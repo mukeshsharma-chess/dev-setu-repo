@@ -20,13 +20,13 @@ const EditChadhavaForm = () => {
     title: "",
     subTitle: "",
     slug: "",
-    ratingValue: "",
-    ratingReviews: "",
+    // ratingValue: "",
+    // ratingReviews: "",
     specialDay: "",
     location: "",
     date: new Date(),
     pujaDetails: "",
-    templeHistory: "",
+    // templeHistory: "",
     isActive: true,
     isActiveOnHome: false,
     isRecommended: false,
@@ -72,13 +72,13 @@ const EditChadhavaForm = () => {
         title: chadhavaDetail.title || "",
         subTitle: chadhavaDetail.subTitle || "",
         slug: chadhavaDetail.slug || "",
-        ratingValue: chadhavaDetail.ratingValue || "",
-        ratingReviews: chadhavaDetail.ratingReviews || "",
+        // ratingValue: chadhavaDetail.ratingValue || "",
+        // ratingReviews: chadhavaDetail.ratingReviews || "",
         specialDay: chadhavaDetail.specialDay || "",
         location: chadhavaDetail.location || "",
         date: chadhavaDetail.date ? new Date(chadhavaDetail.date) : new Date(),
         pujaDetails: chadhavaDetail.pujaDetails || "",
-        templeHistory: chadhavaDetail.templeHistory || "",
+        // templeHistory: chadhavaDetail.templeHistory || "",
         isActive: chadhavaDetail.isActive,
         isActiveOnHome: chadhavaDetail.isActiveOnHome,
         isRecommended: chadhavaDetail.isRecommended,
@@ -488,7 +488,7 @@ const EditChadhavaForm = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block font-semibold">Rating Value</label>
             <input
               type="number"
@@ -508,7 +508,7 @@ const EditChadhavaForm = () => {
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
-          </div>
+          </div> */}
 
         </div>
 
@@ -553,7 +553,7 @@ const EditChadhavaForm = () => {
         </div>
 
         {/* Temple History */}
-        <div>
+        {/* <div>
           <label className="block font-semibold">Temple History</label>
           <textarea
             name="templeHistory"
@@ -562,7 +562,7 @@ const EditChadhavaForm = () => {
             onChange={handleChange}
             className="w-full border p-2 rounded"
           />
-        </div>
+        </div> */}
 
         {/* Packages */}
         <div>
