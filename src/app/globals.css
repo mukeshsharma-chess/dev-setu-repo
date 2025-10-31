@@ -1,5 +1,6 @@
 @import "tailwindcss";
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
 /* ------------------------------
    1. Base CSS Variables
 ------------------------------ */
@@ -11,13 +12,12 @@
   --orange: #f15822;
   --orange-light: #f57e20;
   --yellow: #fec76f;
-  --blue: #37768d;
+  --blue: #255667;
   --brown: #351714;
 
   /* 🖋 Fonts */
-  --font-philosopher: "Philosopher";
-  --font-proximanova-regular: "Proxima Nova Regular";
-  --font-proximanova-bold: "Proxima Nova Bold";
+  --font-philosopher: "EB Garamond";
+  --font-inter: "Inter";
 
   /* 🌗 Default Theme Colors */
   --background: var(--white);
@@ -42,9 +42,8 @@
   --color-black: var(--black);
 
   /* 🖋 Fonts */
-  --font-primary: var(--font-proximanova-regular), sans-serif;
-  --font-secondary: var(--font-philosopher), sans-serif;
-  --font-proxi-bold: var(--font-proximanova-bold), sans-serif;
+  --font-primary: var(--font-inter), sans-serif;
+  --font-secondary: var(--font-philosopher), serif;
 
   /* 📦 Container sizes */
   --container-padding: 1rem;
@@ -97,7 +96,7 @@ body {
 }
 
 .swiper-pagination-bullet-active {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary) !important;
 }
 
 .swiper-horizontal .swiper-button-next svg,
@@ -113,4 +112,56 @@ body {
 .fade-exit { opacity: 1; }
 .fade-exit-active { opacity: 0; transition: opacity 0.5s; }
 
-main.HomePage .swiper {}
+
+.puja-tag {
+  display: block;
+  padding: 6px 10px;
+  position: absolute;
+  left: -14px;
+  top: 20px;
+  color: var(--white);
+  border-top-right-radius: 7px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  z-index: 9;
+}
+
+.puja-tag::after {
+  display: block;
+  content: "";
+  height: 14px;
+  width: 14px;
+  position: absolute;
+  background-color: var(--color-primary-light);
+  left: 0;
+  bottom: -14px;
+  border-bottom-left-radius: 14px;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out;
+  @keyframes glow {
+    0%, 100% { text-shadow: 0 0 2px rgba(255, 180, 100, 0.5); }
+    50% { text-shadow: 0 0 5px rgba(255, 130, 30, 0.8); }
+  }
+}
+
+.glow-text {
+  animation: glow 3s ease-in-out infinite;
+}
+
+@media (min-width: 640px) {
+  .puja-page .swiper .swiper-button-prev,
+  .puja-page .swiper .swiper-button-next{top: 60% !important; width: 30px !important; height: 30px !important;}
+}

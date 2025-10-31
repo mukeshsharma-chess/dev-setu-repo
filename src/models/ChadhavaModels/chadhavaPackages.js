@@ -24,17 +24,17 @@ export default (sequelize, DataTypes) => {
     },
     currency: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       field: "currency",
     },
     tags: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       field: "tags",
     },
     price: {
       type: DataTypes.FLOAT,
-      allowNull: true,
+      allowNull: false,
       field: "price",
     },
     chadhavaId: {

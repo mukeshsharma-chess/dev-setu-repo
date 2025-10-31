@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, BookOpen, List, Gift } from "lucide-react"; // icons
+import { Menu, X, BookOpen, List, Gift, Flame, Leaf } from "lucide-react"; // icons
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
@@ -30,92 +30,60 @@ const Sidebar = () => {
           <ul className="space-y-2">
             <li>
               <Link
-                href="/admin/puja"
-                className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
-              >
-                <BookOpen size={18} />
-                {open && <span>Puja</span>}
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/admin/puja/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
-                <List size={18} />
-                {open && <span>Puja List</span>}
+                <Flame size={24} className="text-yellow-500" />
+                {open && <span>All Pujas</span> }
               </Link>
             </li>
-            <li>
-              <Link
-                href="/admin/chadhava"
-                className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
-              >
-                <Gift size={18} />
-                {open && <span>Chadhava</span>}
-              </Link>
-            </li>
+            
             <li>
               <Link
                 href="/admin/chadhava/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
-                <List size={18} />
+                <Leaf size={24} className="text-yellow-500" />
                 {open && <span>Chadhava List</span>}
               </Link>
             </li>
             <li>
               <Link
-                href="/admin/aartis"
-                className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
-              >
-                <Gift size={18} />
-                {open && <span>Aartis</span>}
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/admin/aartis/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
-                <List size={18} />
+                🪔
                 {open && <span>Aartis List</span>}
               </Link>
             </li>
+            
             <li>
               <Link
-                href="/admin/aartis/list"
+                href="/admin/chalisa/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
-                <Gift size={18} />
-                {open && <span>Articles</span>}
+                <BookOpen size={24} className="text-yellow-500" />
+                {open && <span>Chalisa List</span>}
               </Link>
             </li>
+
             <li>
               <Link
-                href="/admin/articles/list"
+                href="/admin/mantras/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
-                <List size={18} />
-                {open && <span>Articles List</span>}
+                <span className="text-yellow-500 text-large">🕉️</span>
+                {open && <span>All  Mantras</span>}
               </Link>
             </li>
+            
             <li>
               <Link
-                href="/admin/testimonials"
+                href="/admin/horoscope/list"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
-                <Gift size={18} />
-                {open && <span>Testimonials</span>}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/admin/testimonials/list"
-                className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
-              >
-                <List size={18} />
-                {open && <span>Testimonials List</span>}
+                <List size={24} />
+                {open && <span>Horoscope List</span>}
               </Link>
             </li>
             <li>
@@ -123,7 +91,7 @@ const Sidebar = () => {
                 href="/admin/faqs"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
-                <Gift size={18} />
+                <Gift size={24} />
                 {open && <span>FAQs</span>}
               </Link>
             </li>
@@ -132,7 +100,7 @@ const Sidebar = () => {
                 href="/admin/puja-package"
                 className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600 rounded-md"
               >
-                <Gift size={18} />
+                <Gift size={24} />
                 {open && <span>Common Packages & Offerings</span>}
               </Link>
             </li>

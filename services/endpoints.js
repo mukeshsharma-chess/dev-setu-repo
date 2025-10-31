@@ -24,10 +24,6 @@ export const endpoints = {
         chadhava: `${baseApiUrl}/chadhava`,
     },
 
-    Articles: {
-        articles: `${baseApiUrl}/articles`,
-    },
-
     FileUpload: {
         upload: `${baseApiUrl}/upload`,
     },
@@ -61,12 +57,16 @@ export const endpoints = {
         Verify: `${baseApiUrl}/payment/verify`,
     },
 
-    Aartis: {
+    Articels: {
         aartis: `${baseApiUrl}/aartis`,
+        chalisa: `${baseApiUrl}/articles/chalisas`,
+        mantras: `${baseApiUrl}/articles/mantras`,
+        horoscope: `${baseApiUrl}/articles/horoscope`,
     },
 
     Web: {
         puja:`${baseApiUrl}/web/pujas`,
-        chadhava:`${baseApiUrl}/web/chadhavas`
+        chadhava:`${baseApiUrl}/web/chadhavas`,
+        cart:`${baseApiUrl}/web/cart`
     },
 }

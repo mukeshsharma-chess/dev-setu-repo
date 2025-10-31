@@ -27,23 +27,25 @@ import chadhava from './ChadhavaModels/chadhava.js';
 import chadhavaBanner from './ChadhavaModels/chadhavaBanner.js';
 import chadhavaFaqs from './ChadhavaModels/chadhavaFaqs.js';
 import chadhavaPackages from './ChadhavaModels/chadhavaPackages.js';
-import recommendedChadawa from './ChadhavaModels/recommendedChadawa.js';
-import pujaPerformed from './ChadhavaModels/pujaPerformed.js';
-import chadhavaOfferings from './ChadhavaModels/chadhavaOfferings.js';
+// import recommendedChadawa from './ChadhavaModels/recommendedChadawa.js';
+// import pujaPerformed from './ChadhavaModels/pujaPerformed.js';
+// import chadhavaOfferings from './ChadhavaModels/chadhavaOfferings.js';
+import chadhavaFocus from './ChadhavaModels/chadhavaFocus.js';
 
 import Aartis from './ArticelsModels/Aartis.js';
 import Chalisas from './ArticelsModels/Chalisas.js';
 import Festivals from './ArticelsModels/Festivals.js';
 import Wishes from './ArticelsModels/Wishes.js';
 import Horoscopes from './ArticelsModels/Horoscopes.js';
+import Mantras from './ArticelsModels/Mantras.js';
 
 import testimonials from './testimonialModels/testimonials.js';
 
 import commonPujaPackage from './commonPujaPackage.js';
 
 import cart from './CartModels/cart.js';
-import cartAddOn from './CartModels/cartAddOn.js';
-import cartPackage from './CartModels/cartPackage.js';
+import CartAddOn from './CartModels/cartAddOn.js';
+import CartPackage from './CartModels/cartPackage.js';
 
 import Faqs from './faqs.js';
 import offerings from './offerings.js';
@@ -83,21 +85,20 @@ db.chadhava = chadhava(sequelize, Sequelize.DataTypes);
 db.chadhavaBanner = chadhavaBanner(sequelize, Sequelize.DataTypes);
 db.chadhavaFaqs = chadhavaFaqs(sequelize, Sequelize.DataTypes);
 db.chadhavaPackages = chadhavaPackages(sequelize, Sequelize.DataTypes);
-db.recommendedChadawa = recommendedChadawa(sequelize, Sequelize.DataTypes);
-db.pujaPerformed = pujaPerformed(sequelize, Sequelize.DataTypes);
-db.chadhavaOfferings = chadhavaOfferings(sequelize, Sequelize.DataTypes);
+db.chadhavaFocus = chadhavaFocus(sequelize, Sequelize.DataTypes);
 
 db.Aartis = Aartis(sequelize, Sequelize.DataTypes);
 db.Chalisas = Chalisas(sequelize, Sequelize.DataTypes);
 db.Festivals = Festivals(sequelize, Sequelize.DataTypes);
 db.Wishes = Wishes(sequelize, Sequelize.DataTypes);
 db.Horoscopes = Horoscopes(sequelize, Sequelize.DataTypes);
+db.Mantras = Mantras(sequelize, Sequelize.DataTypes);
 
 db.testimonials = testimonials(sequelize, Sequelize.DataTypes);
 
 db.cart = cart(sequelize, Sequelize.DataTypes);
-db.cartAddOn = cartAddOn(sequelize, Sequelize.DataTypes);
-db.cartPackage = cartPackage(sequelize, Sequelize.DataTypes);
+db.CartAddOn = CartAddOn(sequelize, Sequelize.DataTypes);
+db.CartPackage = CartPackage(sequelize, Sequelize.DataTypes);
 
 db.Faqs = Faqs(sequelize, Sequelize.DataTypes);
 db.offerings = offerings(sequelize, Sequelize.DataTypes);

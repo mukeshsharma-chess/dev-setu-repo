@@ -1,7 +1,7 @@
 
 
 import { NextResponse } from "next/server";
-import { verifyAuth } from "../../../authentication/auth";
+import { verifyAuth } from "../../../middleware/auth";
 import models from "@/models/index.js";
 
 const { Users } = models;

@@ -19,6 +19,11 @@ export default (sequelize, DataTypes) => {
         allowNull: true,
         field: "tip_amount",
       },
+      grandTotal: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        field: "grand_total",
+      },
       otherCharges: {
         type: DataTypes.JSON,
         allowNull: true,
@@ -73,12 +78,12 @@ export default (sequelize, DataTypes) => {
   );
 
   cart.associate = (models) => {
-    cart.hasOne(models.cartPackage, {
+    cart.hasOne(models.CartPackage, {
       foreignKey: "cartId",
       as: "package",
       onDelete: "CASCADE",
     });
-    cart.hasMany(models.cartAddOn, {
+    cart.hasMany(models.CartAddOn, {
       foreignKey: "cartId",
       as: "add_ons",
       onDelete: "CASCADE",

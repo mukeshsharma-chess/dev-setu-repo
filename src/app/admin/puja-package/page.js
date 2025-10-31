@@ -8,13 +8,14 @@ import PackagesComponent from "@/components/PujaPackages/AdminPackage";
 import { addNewPackageDataAction, deletePackageAction, requestPackageDataAction } from "@/redux/actions/packageActions";
 import { addNewOfferingDataAction, deleteOfferingAction, requestOfferingDataAction } from "@/redux/actions/offeringActions";
 import AdminOfferingCard from "@/components/OfferingCard/adminCard";
+import SectionLoader from "@/components/Atom/loader/sectionLoader";
 
 const PujaPackages = () => {
 
 
     const [formData, setFormData] = useState({
-        packages: [{ packImg: null, packageType: "", packagePrice: "" }],
-        offerings: [{ offerimg: null, title: "", description: "", price: "" }],
+        packages: [{ packImg: null, packageType: "", packagePrice: "", packageDescription: "", noOfPeople: "" }],
+        offerings: [{ offerimg: null, title: "", description: "", price: 0, tags: "" }],
     });
 
     const [editId, setEditId] = useState(null);
@@ -28,6 +29,7 @@ const PujaPackages = () => {
     const dispatch = useDispatch();
     const { allPackage } = useSelector((state) => state.packages);
     const { allOffering } = useSelector((state) => state.offering);
+    const { isLoading } = useSelector((state) => state.loader);
 
 
     useEffect(() => {
@@ -113,6 +115,9 @@ const PujaPackages = () => {
             if (res.status === 200) {
                 setAddNewPackage(false)
                 dispatch(requestPackageDataAction());
+                setFormData({
+                    packages: [{ packImg: null, packageType: "", packagePrice: "", packageDescription: "", noOfPeople: "" }]
+                })
             } else {
                 console.log("Error:", res.error);
                 alert(res.message)
@@ -132,8 +137,11 @@ const PujaPackages = () => {
         // console.log("handleOfferSubmit", payload)
         fetchWithWait({ dispatch, action: addNewOfferingDataAction(payload) }).then((res) => {
             if (res.status === 200) {
-                setAddNewPackage(false)
+                setAddNewOffering(false)
                 dispatch(requestOfferingDataAction());
+                setFormData({
+                    offerings: [{ offerimg: null, title: "", description: "", price: 0, tags: "" }],
+                })
             } else {
                 console.log("Error:", res.error);
                 alert(res.message)
@@ -187,8 +195,8 @@ const PujaPackages = () => {
             </div>
            { Array.isArray(allPackage) && allPackage.length > 0 && !addNewPackage ?
                 <>
-                    <h2 className="text-xl font-bold mb-4">Available Common Packages</h2>
-                    <PackagesComponent pujaPackages={allPackage} handleDelete={handleDelete}  />
+                    { isLoading ? <SectionLoader /> : <><h2 className="text-xl font-bold mb-4">Available Common Packages</h2>
+                    <PackagesComponent pujaPackages={allPackage} handleDelete={handleDelete}  /> </>}
                 </>
 
                 : 
@@ -247,7 +255,7 @@ const PujaPackages = () => {
 
                                 <input
                                     type="text"
-                                    placeholder="Package Type"
+                                    placeholder="Package Title"
                                     value={packaging.packageType}
                                     onChange={(e) => {
                                         const updated = [...formData?.packages];
@@ -256,12 +264,34 @@ const PujaPackages = () => {
                                     }}
                                     className="w-full border p-2 rounded mb-2"
                                 />
-                                <textarea
+                                <input
+                                    type="text"
                                     placeholder="Package Price"
                                     value={packaging.packagePrice}
                                     onChange={(e) => {
                                         const updated = [...formData?.packages];
                                         updated[index].packagePrice = e.target.value;
+                                        setFormData({ ...formData, packages: updated });
+                                    }}
+                                    className="w-full border p-2 rounded mb-2"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Number of People"
+                                    value={packaging.noOfPeople}
+                                    onChange={(e) => {
+                                        const updated = [...formData?.packages];
+                                        updated[index].noOfPeople = e.target.value;
+                                        setFormData({ ...formData, packages: updated });
+                                    }}
+                                    className="w-full border p-2 rounded mb-2"
+                                />
+                                <textarea
+                                    placeholder="Description"
+                                    value={packaging.packageDescription}
+                                    onChange={(e) => {
+                                        const updated = [...formData?.packages];
+                                        updated[index].packageDescription = e.target.value;
                                         setFormData({ ...formData, packages: updated });
                                     }}
                                     className="w-full border p-2 rounded"
@@ -273,7 +303,7 @@ const PujaPackages = () => {
                             onClick={() =>
                                 setFormData({
                                     ...formData,
-                                    packages: [...formData?.packages, { packageType: "", packagePrice: "" }],
+                                    packages: [...formData?.packages, { packageType: "", packagePrice: "", packageDescription: "", noOfPeople: "" }],
                                 })
                             }
                             className="bg-green-500 text-white px-4 py-1 rounded cursor-pointer"
@@ -327,8 +357,8 @@ const PujaPackages = () => {
                     className="mx-auto shadow-md rounded-lg p-6 space-y-6 scrollbar-hide"
                 >
                 <div>
-                    <label className="block font-semibold">Offerings</label>
-                    {formData?.offerings.map((offering, index) => (
+                    <label className="block font-semibold">Puja Common Offerings</label>
+                    {formData?.offerings?.map((offering, index) => (
                         <div key={index} className="border p-3 rounded mb-3 relative">
                             {formData?.offerings.length > 1 && <button
                                 type="button"
@@ -375,7 +405,7 @@ const PujaPackages = () => {
 
                             <input
                                 type="text"
-                                placeholder="Offering Type"
+                                placeholder="Offering"
                                 value={offering.title}
                                 onChange={(e) => {
                                     const updated = [...formData?.offerings];
@@ -384,10 +414,21 @@ const PujaPackages = () => {
                                 }}
                                 className="w-full border p-2 rounded mb-2"
                             />
+                            <input
+                                type="text"
+                                placeholder="Tags"
+                                value={offering.tags}
+                                onChange={(e) => {
+                                    const updated = [...formData?.offerings];
+                                    updated[index].tags = e.target.value;
+                                    setFormData({ ...formData, offerings: updated });
+                                }}
+                                className="w-full border p-2 rounded mb-2"
+                            />
 
                             <input
                                 type="text"
-                                placeholder="Offering price"
+                                placeholder="Price"
                                 value={offering.price}
                                 onChange={(e) => {
                                     const updated = [...formData?.offerings];
@@ -398,7 +439,7 @@ const PujaPackages = () => {
                             />
 
                             <textarea
-                                placeholder="Offering description"
+                                placeholder="Significance"
                                 value={offering.description}
                                 onChange={(e) => {
                                     const updated = [...formData?.offerings];
@@ -414,7 +455,7 @@ const PujaPackages = () => {
                         onClick={() =>
                             setFormData({
                                 ...formData,
-                                offerings: [...formData?.offerings, { title: "", description: "", price: "" }],
+                                offerings: [...formData?.offerings, { title: "", description: "", tags: "",  price: 0 }],
                             })
                         }
                         className="bg-green-500 text-white px-4 py-1 rounded cursor-pointer"
