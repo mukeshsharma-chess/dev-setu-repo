@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 export async function GET(request) {
   const apiKey = request.headers.get("x-api-key");
 
-  // ✅ optional security layer
   if (apiKey !== process.env.ADMIN_KEY) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -14,10 +13,22 @@ export async function GET(request) {
     await db.sequelize.authenticate();
     console.log("✅ DB Connected");
 
-    // ⚠️ Use { alter: true } for safe schema update
-    await db.sequelize.sync({ alter: true });
+    const alteredModels = [];
 
-    return NextResponse.json({ message: "✅ Database synced successfully!" });
+    // Loop through all models and sync individually
+    for (const modelName of Object.keys(db)) {
+      const model = db[modelName];
+      if (model?.sync) {
+        await model.sync({ alter: true });
+        alteredModels.push(modelName);
+        console.log(`✅ Synced model: ${modelName}`);
+      }
+    }
+
+    return NextResponse.json({
+      message: "✅ Database synced successfully!",
+      alteredModels,
+    });
   } catch (error) {
     console.error("❌ Sync failed:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
