@@ -103,7 +103,7 @@ const Home = () => {
 
   return (
     <Main className="HomePage">
-      <HeroBanner slides={heroBanner} />
+      <HeroBanner height={600} width={1521} slides={heroBanner} />
       <ContinuousSlider />
       <Container>
         <section className="py-3 md:py-8">
@@ -111,7 +111,7 @@ const Home = () => {
             <h2 className="font-secondary text-center text-3xl md:text-4xl uppercase font-bold text-[var(--primary)] mb-2 mt-5 drop-shadow-lg">
               Special <span className="text-[var(--color-info)]">puja</span>
             </h2>
-            <p className="text-base md:text-xl text-[var(--color-dark)] text-center md:text-left">
+            <p className="text-sm md:text-xl text-[var(--color-dark)] text-center md:text-center">
               Connect with the divine from home. Get your puja performed in your
               name at India’s holy temples and invite peace, joy, and prosperity
               into your life.
@@ -156,15 +156,15 @@ const Home = () => {
 
       <HowItWorks />
 
-      <section className="py-8">
+      {/* <section className="py-8"> */}
         {/* <div className="mx-auto max-w-screen-md text-left md:text-center lg:mb-0">
             <h2 className="font-secondary capitalize text-center text-3xl font-bold text-[var(--primary)] mb-2 mt-5">
              Explore Knowledge
             </h2>
             <p className="text-base"></p>
           </div> */}
-        <LibraryCards />
-      </section>
+        {/* <LibraryCards />
+      </section> */}
 
       {/* <section className="bg-white text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">
@@ -179,7 +179,7 @@ const Home = () => {
 
       <section className="py-14 bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary)] to-[var(--color-accent)]">
         <Container>
-          <h2 className="font-secondary text-center text-3xl font-bold mb-10">
+          <h2 className="font-secondary text-center text-white text-3xl font-bold mb-10">
             Reviews
           </h2>
           <Reviews reviews={reviews} />
@@ -188,7 +188,7 @@ const Home = () => {
 
       <StatsSection />
 
-      <section className="relative bg-white py-20 overflow-hidden text-center">
+      <section className="relative bg-white py-8 md:py-20 overflow-hidden text-center">
         {/* Top Ornament */}
         {/* <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 opacity-80">
           <Image

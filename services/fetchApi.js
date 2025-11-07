@@ -203,8 +203,9 @@ export default class fetchApi extends Api {
     }
 
     UpdetePackage(data) {
+        console.log("UpdetePackage", data);
         let url = this.buildUrl(endpoints.Packages.package, "full")
-        return this.fetchNormal(url, "PUT", JSON.stringify(data)).then(response => response)
+        return this.fetchNormal(url, "PUT", JSON.stringify(data), `/${data.id}`).then(response => response)
     }
 
     DeletePackage(data) {
@@ -366,6 +367,16 @@ export default class fetchApi extends Api {
         if (id) {
             return this.fetchParams(url, "DELETE", null, `/${id}`).then(response => response)
         }
+    }
+
+    SendMobileOtp(data) {
+        let url = this.buildUrl(endpoints.MobileLogin.sendotp, "full")
+        return this.fetchNormal(url, "POST", JSON.stringify(data)).then(response => response)
+    }
+
+    VerifyMobileOtp(data) {
+        let url = this.buildUrl(endpoints.MobileLogin.sendotp, "full")
+        return this.fetchNormal(url, "POST", JSON.stringify(data)).then(response => response)
     }
 
 }

@@ -16,14 +16,14 @@ export async function GET() {
         {
           model: chadhavaBanner,
           where: { position: 1 },
-          attributes: ["id", "image_url", "position", "type"],
+          attributes: ["id", "image_url", "mobile_image_url", "position", "type"],
         },
       ],
     });
 
     const chadhavaCard = await chadhava.findAll({
-      where: { isActive: true, isActiveOnHome: false },
-      attributes: ["id", "title", "slug", "sub_title", "location", "date", "tags"],
+      where: { isActive: true },
+      attributes: ["id", "title", "slug", "sub_title", "location", "date", "tags", "tithi"],
       include: [
         {
           model: chadhavaBanner,

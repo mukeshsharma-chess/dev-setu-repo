@@ -76,6 +76,7 @@ export async function GET(req, { params }) {
         await pujaBanners.bulkCreate(
           body.banners.map((banner) => ({
             imageUrl: banner.imgUrl,
+            mobileImageUrl: banner.mobileImageUrl,
             type: banner.type,
             position: banner.position ? parseInt(banner.position) : null,
             pujaId: updatedPujas.id,
@@ -106,7 +107,9 @@ export async function GET(req, { params }) {
             offerimg: r.offerimg,
             title: r.title,
             tags: r.tags,
-            price: r.price,
+            strikePrice: r.strikePrice ? parseInt(r.strikePrice) : null,
+            price: r.price ? parseInt(r.price) : 0,
+            position: r.position,
             description: r.description,
             pujaId: updatedPujas.id,
           }))

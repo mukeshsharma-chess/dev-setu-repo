@@ -3,29 +3,25 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Landmark,
   Users,
-  Building,
-  Sparkles,
-  ListChecks,
   User,
   Video,
   Gift,
-  MapPin,
-  Clock,
-  Home,
   Package,
+  CheckCircle,
+  Globe2, Building2, Star
 } from "lucide-react";
-import { motion } from "framer-motion";
+
+// import { , User, Gift, Video, Package } from "lucide-react";
 
 import PujaCard from "@/components/Cards/pujaCard";
 import Container from "@/components/Container";
 import PageHeroSlider from "@/components/HeroBanner/PageHeroSlider";
 import { requestPujaWebPageAction } from "@/redux/actions/pujaActions";
-import SectionLoader from "@/components/Atom/loader/sectionLoader";
+// import SectionLoader from "@/components/Atom/loader/sectionLoader";
 import { useWithLang } from "../../../../../helper/useWithLang";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import PanditJi from "../../../../../public/images/pandit-ji.png";
 import Reviews from "@/components/Review";
 import HowPujaWorks from "@/components/OnlineSteps";
@@ -117,42 +113,42 @@ const reviews = [
 ];
 
 const steps = [
-  {
-    icon: Package,
-    step: "1",
-    title: "Select Puja Package",
-    text: "Make your selection from our wide range of sacred pujas.",
-    color: "var(--color-primary)",
-  },
-  {
-    icon: User,
-    step: "2",
-    title: "Provide Your Details",
-    text: "After selecting your preferred puja, fill in your Name and Gotra for Sankalp.",
-    color: "var(--color-info)",
-  },
-  {
-    icon: Gift,
-    step: "3",
-    title: "Optional Add-Ons",
-    text: "Include Chadhava, Seva, or other offerings to enhance your spiritual experience.",
-    color: "var(--color-accent)",
-  },
-  {
-    icon: Video,
-    step: "4",
-    title: "Receive Puja Video & Blessings",
-    text: "Your Puja video will be shared on WhatsApp within 3–4 days.",
-    color: "var(--color-primary-light)",
-  },
-  {
-    icon: Home,
-    step: "5",
-    title: "Receive DevaPrasadam",
-    text: "A box of DevaPrasadam* will be delivered to your home at no extra cost.",
-    color: "var(--color-dark)",
-  },
-];
+    {
+      title: "Select Puja Package",
+      text: "Make your selection from our wide range of pujas.",
+      color: "var(--color-primary)",
+      icon: <Package className="w-5 h-5" />,
+      // img: SliderImg,
+    },
+    {
+      title: "Provide Your Details",
+      text: "After selecting your preferred puja, fill in your Name and Gotra for Sankalp.",
+      color: "var(--color-info)",
+      icon: <User className="w-5 h-5" />,
+      // img: SliderImg,
+    },
+    {
+      title: "Optional Add-Ons",
+      text: "Include Chadhava, Seva, or other offerings to enhance your puja experience.",
+      color: "var(--color-accent)",
+      icon: <Gift className="w-5 h-5" />,
+      // img: SliderImg,
+    },
+    {
+      title: "Receive Puja Video & Blessings",
+      text: "The video of your completed puja will be shared on WhatsApp within 3–4 days.",
+      color: "var(--color-primary-light)",
+      icon: <Video className="w-5 h-5" />,
+      // img: SliderImg,
+    },
+    {
+      title: "Receive DevaPrasadam",
+      text: "A box of DevaPrasadam* will be delivered to your home at no extra cost.",
+      color: "var(--color-dark)",
+      icon: <CheckCircle className="w-5 h-5" />,
+      // img: SliderImg,
+    },
+  ];
 
 const PujaPage = () => {
   const dispatch = useDispatch();
@@ -176,19 +172,21 @@ const PujaPage = () => {
       {/* Hero Section */}
 
       <section className="relative py-8 px-2 md:px-6 text-center">
-        <h1 className="font-secondary text-2xl md:text-4xl font-bold text-[var(--color-dark)] mb-4">
+       <Container>
+         <h1 className="font-secondary text-lg md:text-4xl font-bold text-[var(--color-dark)] mb-4">
           Perform Puja as per Vedic rituals at Famous Hindu Temples in India
         </h1>
         <PageHeroSlider
           heroBanner={heroBanner}
           handlaRedirect={handlaRedirect}
         />
+       </Container>
       </section>
 
       {/* Featured Puja */}
       <Container>
         <section className="pb-8 md:px-6">
-          <h2 className="font-secondary text-center text-3xl md:text-4xl uppercase font-bold text-[var(--primary)] md:mt-5">
+          <h2 className="font-secondary text-center text-xl md:text-4xl uppercase font-bold text-[var(--primary)] md:mt-5">
             Featured Pujas
           </h2>
           <PujaCard
@@ -221,9 +219,9 @@ const PujaPage = () => {
       </Container>
 
       {/* Review */}
-      <section className="py-14 bg-gradient-to-br from-[#fff8f3] via-[#fff3e6] to-[#fff0d9]">
+      <section className="py-4 md:py-14 bg-gradient-to-br from-[#fff8f3] via-[#fff3e6] to-[#fff0d9]">
         <Container>
-          <h2 className="font-secondary text-center text-3xl font-bold mb-10">
+          <h2 className="font-secondary text-center text-lg md:text-3xl font-bold mb-4 md:mb-10">
             What devotees Say about DevaSetu Puja?
           </h2>
           <Reviews reviews={reviews} />
@@ -233,12 +231,12 @@ const PujaPage = () => {
       {/* How Puja Works */}
       <section className="relative py-8 md:px-6 overflow-hidden">
         {/* Heading */}
-        <h2 className="text-center font-secondary text-3xl font-bold mb-10 text-[var(--color-dark)]">
+        <h2 className="text-center font-secondary text-lg font-bold mb-10 text-[var(--color-dark)]">
           How does <span className="text-[var(--color-info)]">DevaSetu</span>{" "}
           Online Puja Work?
         </h2>
 
-        <HowPujaWorks />
+        <HowPujaWorks steps={steps} />
       </section>
 
       {/* Stats */}
@@ -258,61 +256,59 @@ const PujaPage = () => {
           {/* Stats Grid */}
           <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 max-w-6xl mx-auto">
             {/* Pujas Done */}
-            <div className="bg-[var(--color-primary-light)]/10 p-6 sm:p-8 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-              <div className="flex justify-center mb-3">
-                <Landmark className="w-8 h-8 text-[var(--color-primary)]" />
-              </div>
-              <p className="text-2xl sm:text-3xl font-secondary font-bold text-[var(--color-primary)] mb-1">
-                10,00,000+
-              </p>
-              <p className="text-lg sm:text-xl font-secondary font-medium text-[var(--color-dark)]">
-                Pujas Done
-              </p>
-            </div>
-
             {/* Happy Devotees */}
             <div className="bg-[var(--color-info)]/10 p-6 sm:p-8 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
               <div className="flex justify-center mb-3">
-                <Users className="w-8 h-8 text-[var(--color-info)]" />
+                <Globe2 className="w-8 h-8 text-[var(--color-info)]" />
               </div>
               <p className="text-2xl sm:text-3xl font-secondary font-bold text-[var(--color-info)] mb-1">
-                300,000+
+                20+
               </p>
               <p className="text-lg sm:text-xl font-secondary font-medium text-[var(--color-dark)]">
-                Happy Devotees
+                Countries
               </p>
             </div>
 
             {/* Famous Temples */}
             <div className="bg-[var(--color-accent)]/10 p-6 sm:p-8 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
               <div className="flex justify-center mb-3">
-                <Building className="w-8 h-8 text-[var(--color-accent)]" />
+                <Building2 className="w-8 h-8 text-[var(--color-accent)]" />
               </div>
               <p className="text-2xl sm:text-3xl font-secondary font-bold text-[var(--color-accent)] mb-1">
                 100+
               </p>
               <p className="text-lg sm:text-xl font-secondary font-medium text-[var(--color-dark)]">
-                Famous Temples
+                Temples
               </p>
             </div>
 
             {/* Spreading Dharma */}
             <div className="bg-[var(--color-dark)]/5 p-6 sm:p-8 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
               <div className="flex justify-center mb-3">
-                <Sparkles className="w-8 h-8 text-[var(--color-dark)]" />
+                < Users className="w-8 h-8 text-[var(--color-dark)]" />
               </div>
               <p className="text-2xl sm:text-3xl font-secondary font-bold text-[var(--color-dark)] mb-1">
-                1 Sankalp
+                20,000+
               </p>
               <p className="text-lg sm:text-xl font-secondary font-medium text-[var(--color-dark)]">
-                Spreading Sanatan Dharma
+                Happy Devotees
+              </p>
+            </div>
+
+            <div className="bg-[var(--color-primary-light)]/10 p-6 sm:p-8 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+              <div className="flex justify-center mb-3">
+                <Star className="w-8 h-8 text-[var(--color-primary)]" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-secondary font-bold text-[var(--color-primary)] mb-1">
+                4.6
+              </p>
+              <p className="text-lg sm:text-xl font-secondary font-medium text-[var(--color-dark)]">
+                Average Rating
               </p>
             </div>
           </div>
         </Container>
 
-        {/* Optional decorative background */}
-        {/* <div className="absolute inset-0 bg-[url('/patterns/mandala-bg.svg')] bg-center bg-cover opacity-5 pointer-events-none"></div> */}
       </section>
 
       {/* Purohit Section */}

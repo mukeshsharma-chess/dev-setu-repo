@@ -10,7 +10,13 @@ import { paymentVerifyAction, requestPaymentOrderAction } from "@/redux/actions/
 import { useRouter } from "next/navigation";
 import { useWithLang } from "../../../../../helper/useWithLang";
 import SectionLoader from "@/components/Atom/loader/sectionLoader";
-import { Info } from "lucide-react";
+import { ChevronDown, ChevronUp, Info } from "lucide-react";
+import LazyImage from "@/components/Atom/LazyImage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import TempleIcon from "../../../../../public/icons/puja-temple1.png"
+import { formatDate } from "../../../../../utils/localstorage";
+import BreadcrumbSteps from "@/components/Breadcrumbs/Breadcrumb";
 
 export default function CheckoutPage() {
   const [members, setMembers] = useState([""]);
@@ -32,6 +38,8 @@ export default function CheckoutPage() {
   const [gotra, setGotra] = useState("");
   const [dontKnow, setDontKnow] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isActivePrasad, setDevaPrashadm] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -99,7 +107,7 @@ export default function CheckoutPage() {
   const handleCheckboxChange = (e) => {
     const checked = e.target.checked;
     setDontKnow(checked);
-    if (checked) setGotra("Kshyapa");
+    if (checked) setGotra("Kashyap");
     else setGotra("");
   };
 
@@ -107,29 +115,25 @@ export default function CheckoutPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { isValid, errors: validationErrors } = validateFields([form], [
+  let fieldsToValidate = ["whatsapp", "name"];
+
+  if (isActivePrasad && allCarts?.package?.type === "puja") {
+    fieldsToValidate = [
       "whatsapp",
       "name",
       "address",
       "postalCode",
       "city",
       "state",
-    ]);
+    ];
+  }
 
-    if (allCarts?.package) {
-      setErrors(validationErrors[0]);
-      if (!isValid) return;
+  const { isValid, errors: validationErrors } = validateFields([form], fieldsToValidate);
 
-      // const memberErrors = members.map((m) => !m.trim());
-
-      // if (memberErrors.includes(true)) {
-      //   setErrors((prev) => ({
-      //     ...prev,
-      //     members: "Please fill all member names",
-      //   }));
-      //   return;
-      // }
-    }
+  if (allCarts?.package) {
+    setErrors(validationErrors[0]);
+    if (!isValid) return;
+  }
 
 
     if (!gotra.trim() && !dontKnow) {
@@ -140,10 +144,10 @@ export default function CheckoutPage() {
     setIsLoading(true);
 
 
-    const userDetails = { ...form, members };
+    const userDetails = { ...form, members, gotra };
     // const payload = { ...allCarts, store_id: storeId, userDetails };
 
-    const payload = { ...allCarts, store_id: storeId, userDetails, grand_total: finalTotal };
+    const payload = { ...allCarts, store_id: storeId, isActivePrasad, userDetails, grand_total: finalTotal };
 
     try {
       // Step 1: Save cart
@@ -258,41 +262,71 @@ export default function CheckoutPage() {
       alert("Something went wrong. Please try again.");
     }
   };
+
   // console.log("Rendered Checkout Page with storeId:", allCarts);
 
   return (
 
-    <section className="min-h-screen bg-gradient-to-br from-[var(--color-accent)]/15 via-[var(--color-background)] to-[var(--color-primary-light)]/10 py-10 px-4 md:px-10 font-[var(--font-primary)]">
-      <div className="max-w-3xl mx-auto bg-white/90 backdrop-blur-sm shadow-2xl rounded-3xl p-6 md:p-10 relative overflow-hidden border border-[var(--color-primary-light)]/30">
+    <section className="min-h-screen bg-gradient-to-br from-[var(--color-accent)]/15 via-[var(--color-background)] to-[var(--color-primary-light)]/10 pt-4 md:py-10 px-4 md:px-10 font-[var(--font-primary)]">
+      <BreadcrumbSteps currentStep={4} />
+      <div className="mt-4 md:mt-0 max-w-3xl mx-auto bg-white/90 backdrop-blur-sm shadow-2xl rounded-3xl p-3 md:p-8 relative overflow-hidden border border-[var(--color-primary-light)]/30">
         {/* Decorative Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary-light)]/10 to-transparent pointer-events-none rounded-3xl"></div>
 
-        <h1 className="text-3xl md:text-4xl font-[var(--font-secondary)] text-[var(--color-dark)] mb-8 text-center relative z-10 tracking-tight">
+        <h1 className="text-xl md:text-3xl font-[var(--font-secondary)] text-[var(--color-dark)] mb-4 text-center relative z-10 tracking-tight">
           🛕 Secure Checkout
         </h1>
 
         {/* Cart Summary Section */}
-        <div className="border border-[var(--color-primary-light)] rounded-2xl p-6 mb-8 bg-gradient-to-br from-white to-[var(--color-background)]/60 shadow-md relative z-10 transition hover:shadow-lg">
-          <h2 className="font-semibold text-lg text-[var(--color-primary)] mb-4">
+        <div className="border border-[var(--color-primary-light)] rounded-2xl p-3 md:p-6 mb-8 bg-gradient-to-br from-white to-[var(--color-background)]/60 shadow-md relative z-10 transition hover:shadow-lg">
+          <h2 className="font-semibold text-lg text-[var(--color-primary)] mb-2 md:mb-4">
             Your Cart Summary
           </h2>
 
           {allCarts?.["package"] && (
-            <div className="border-t border-dashed border-[var(--color-accent)] pt-4 mt-4 space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-800 text-base">
+            <div className="border-t border-dashed border-[var(--color-accent)] pt-4 mt-4" onClick={() => setIsOpen(!isOpen)}>
+              <div className="flex justify-between items-center cursor-pointer">
+                <span className="font-medium text-gray-800 text-sm md:text-base">
                   {allCarts?.["package"]?.productTitle}
                 </span>
-                <span className="bg-[var(--color-accent)]/20 text-[var(--color-dark)] px-3 py-1 rounded-full text-sm font-semibold">
-                  {allCarts?.["package"]?.packageType}
-                </span>
+                {isOpen ? (
+                    <ChevronUp className="w-6 h-6 text-[var(--color-dark)] top-0" />
+                  ) : (
+                    <ChevronDown className="w-6 h-6 text-[var(--color-dark)] top-0" />
+                  )}
               </div>
+              { allCarts?.["package"]?.packageType && <span className="bg-[var(--color-accent)]/20 text-[var(--color-dark)] px-3 py-1 rounded-full text-sm md:text-base font-semibold mt-2 md:mt-0 inline-block">
+                  {allCarts?.["package"]?.packageType}
+                </span> }
               {allCarts?.["package"]?.packagePrice && (
-                <div className="flex justify-between text-gray-700 font-medium">
+                <div className="flex justify-between text-[var(--color-dark)] font-medium mt-4">
                   <span>Base Price</span>
                   <span>₹{allCarts?.["package"]?.packagePrice}</span>
                 </div>
               )}
+
+              {isOpen && (
+              <div className="p-4 flex flex-col gap-2 text-gray-600 text-sm">
+                <div className="flex items-center gap-2">
+                  <LazyImage
+                    src={TempleIcon}
+                    alt="Temple Icon"
+                    width={22}
+                    height={22}
+                    className="mr-2 relative -top-1.5 "
+                  />
+                  {allCarts?.package?.location}
+                  
+                </div>
+                <div className="flex items-center gap-2">
+                  <FontAwesomeIcon
+                    icon={faCalendarDays}
+                    className="relative -left-1 text-2xl text-[var(--color-primary-light)]"
+                  />
+                  {formatDate(allCarts?.package?.date, "full")} {allCarts?.package?.tithi}
+                </div>
+              </div>
+            )}
             </div>
           )}
 
@@ -309,6 +343,18 @@ export default function CheckoutPage() {
                   </span>
                 </div>
               ))}
+
+              { (allCarts?.['other_charges']?.pandit_charge > 0 && allCarts?.package?.type === "puja") &&
+                <div
+                  className="flex justify-between text-gray-700 font-medium"
+                >
+                  <span>Pandit Dakhina </span>
+                  <span>
+                    ₹{allCarts?.['other_charges']?.pandit_charge}
+                  </span>
+                </div>
+              }
+
               <div className="flex justify-between font-semibold border-t pt-2 text-[var(--color-dark)]">
                 <span>Total Amount</span>
                 <span>₹{allCarts?.["grand_total"]}</span>
@@ -318,11 +364,11 @@ export default function CheckoutPage() {
         </div>
 
         {/* Form Section */}
-        <form className="space-y-6 relative z-10">
+        <form className="space-y-2 md:space-y-6 relative z-10">
           {/* WhatsApp */}
           <div>
-            <label className="block font-medium mb-2 text-[var(--color-dark)]">
-              WhatsApp Number
+            <label className=" text-sm md:text-base block font-medium mb-2 text-[var(--color-dark)]">
+              WhatsApp Number*
             </label>
             <div className="flex gap-2">
               <select className="border rounded-lg px-3 py-2 bg-white shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] transition">
@@ -331,25 +377,29 @@ export default function CheckoutPage() {
               <input
                 type="tel"
                 placeholder="Enter your mobile number"
-                className={`flex-1 border rounded-lg px-3 py-2 shadow-sm transition focus:ring-2 ${errors.whatsapp
+                className={` text-sm md:text-base flex-1 border rounded-lg px-3 py-2 shadow-sm transition focus:ring-2 ${errors.whatsapp
                     ? "border-red-500 focus:ring-red-400"
                     : "focus:ring-[var(--color-primary)]"
                   }`}
                 value={form.whatsapp}
-                onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  setForm({ ...form, whatsapp: value });
+                }}
+                maxLength={10}
               />
             </div>
           </div>
 
           {/* Name */}
           <div>
-            <label className="block font-medium mb-2 text-[var(--color-dark)]">
-              Full Name
+            <label className=" text-sm md:text-base block font-medium mb-2 text-[var(--color-dark)]">
+              Full Name*
             </label>
             <input
               type="text"
               placeholder="Enter your name"
-              className={`w-full border rounded-lg px-3 py-2 shadow-sm transition focus:ring-2 ${errors.name
+              className={`text-sm md:text-base w-full border rounded-lg px-3 py-2 shadow-sm transition focus:ring-2 ${errors.name
                   ? "border-red-500 focus:ring-red-400"
                   : "focus:ring-[var(--color-primary)]"
                 }`}
@@ -366,13 +416,13 @@ export default function CheckoutPage() {
               value={gotra}
               onChange={(e) => setGotra(e.target.value)}
               disabled={dontKnow}
-              className={`w-full border rounded-lg px-3 py-3 pr-10 shadow-sm transition ${dontKnow
+              className={`text-sm md:text-base w-full border rounded-lg px-3 py-2 md:py-3 pr-10 shadow-sm transition ${dontKnow
                   ? "bg-gray-100 cursor-not-allowed"
                   : "focus:ring-2 focus:ring-[var(--color-primary)]"
                 }`}
             />
             <Info
-              className="absolute right-3 top-3.5 text-[var(--color-info)] cursor-pointer hover:text-[var(--color-primary)] transition"
+              className="absolute right-3 top-[9px] md:top-3.5 text-[var(--color-info)] cursor-pointer hover:text-[var(--color-primary)] transition"
               size={20}
               onClick={() => setShowPopup(true)}
             />
@@ -391,10 +441,16 @@ export default function CheckoutPage() {
 
           {/* Members */}
           <div>
-            <label className="block font-medium mb-2 text-[var(--color-dark)]">
-              Family Members{" "}
-              {allCarts?.package?.type === "chadhava" && " / ₹50 each"}
-            </label>
+           {(
+              (allCarts?.package?.type === "puja" && allCarts?.package?.noOfPeople > 1) ||
+              allCarts?.package?.type === "chadhava"
+            ) && (
+              <label className="block font-medium mb-2 text-[var(--color-dark)]">
+                Family Members{" "}
+                {allCarts?.package?.type === "chadhava" && " / ₹50 each"}
+              </label>
+            )}
+
             <div className="space-y-2">
               {members.map((member, i) => (
                 <div key={i} className="flex items-center gap-2">
@@ -428,45 +484,26 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* Address */}
-          {/* <div>
-        <label className="block font-medium mb-2 text-[var(--color-dark)]">
-          Address
-        </label>
-        <input
-          type="text"
-          placeholder="Street Address"
-          className="w-full border rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] transition"
-          value={form.address}
-          onChange={(e) => setForm({ ...form, address: e.target.value })}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-          <input
-            type="text"
-            placeholder="Postal Code"
-            className="border rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] transition"
-            value={form.postalCode}
-            onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="City"
-            className="border rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] transition"
-            value={form.city}
-            onChange={(e) => setForm({ ...form, city: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="State"
-            className="border rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] transition"
-            value={form.state}
-            onChange={(e) => setForm({ ...form, state: e.target.value })}
-          />
-        </div>
-      </div> */}
+          {allCarts?.package?.type === "puja" && <div className="flex items-center justify-between border p-2 md:p-3 rounded">
+            <label className="text-sm md:text-lg font-semibold">Want DevaPrasadam?</label>
+            <button
+              type="button"
+              onClick={() => setDevaPrashadm((prev) => !prev)} 
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+                isActivePrasad ? "bg-green-600" : "bg-gray-600"
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  isActivePrasad ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+          </div>}
 
           {/* Address */}
-          <div>
+         { !isActivePrasad || allCarts?.package?.type !== "chadhava" && 
+           <div>
             <label className="block font-medium mb-2 text-[var(--color-dark)]">
               Address
             </label>
@@ -534,16 +571,16 @@ export default function CheckoutPage() {
               </div>
             </div>
           </div>
-
+         }
 
           {/* Total + Pay */}
           <div className="flex justify-between items-center pt-5 border-t border-[var(--color-primary-light)]">
-            <p className="text-xl font-semibold text-[var(--color-dark)]">
+            <p className="text-base md:text-xl font-semibold text-[var(--color-dark)]">
               Total: ₹{finalTotal}/-
             </p>
             <button
               type="button"
-              className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-light)] text-white px-8 py-3 rounded-xl font-semibold shadow-md hover:scale-[1.03] hover:shadow-lg transition-transform"
+              className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-light)] text-white px-4 md:px-8 py-2 md:py-3 rounded-md md:rounded-xl font-semibold shadow-md hover:scale-[1.03] hover:shadow-lg transition-transform"
               onClick={handleSubmit}
             >
               Pay Now
@@ -562,7 +599,7 @@ export default function CheckoutPage() {
               </h3>
               <p className="text-sm text-gray-700 mb-5 leading-relaxed">
                 If you do not know your lineage (gotra), in this situation, you can consider your
-                lineage as <b>Kshyapa</b> because Rishi Kshyapa is a sage whose descendants can be
+                lineage as <b>Kashyap</b> because Rishi Kashyap is a sage whose descendants can be
                 found in every caste. Therefore, he is considered a revered sage. The priest will
                 chant these details during the worship.
               </p>

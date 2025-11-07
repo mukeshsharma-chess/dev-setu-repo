@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronDown, User, Mail, Phone, MessageCircle, Flame, BookOpen, Home, FileText, X, Menu } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useLang } from "@/app/langProviders";
 import Logo from "../../../public/icons/devasetu-logo_vertical.svg";
 import Container from "@/components/Container";
+import GoogleTranslate from "@/components/GoogleTranslate";
+// import { useWithLang } from "../../../helper/useWithLang";
 
 const menu = [
   { id: 1, title: { en: "Home", hi: "होम" }, path: "/" },
@@ -22,6 +24,18 @@ const Header = () => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const withLang = (path) => `/${lang}${path}`;
   const normalize = (path) =>
@@ -32,6 +46,14 @@ const Header = () => {
     let newPath = pathname.replace(/^\/(en|hi)/, "");
     router.push(`/${code}${newPath || ""}`);
   };
+
+  // const withLang = useWithLang();
+
+  const handleRedirect = () => {
+    setMenuOpen(false)
+    router.push(withLang("/login"));
+  };
+
 
   return (
     <header className="w-full shadow-sm sticky top-0 z-50 bg-white">
@@ -61,18 +83,20 @@ const Header = () => {
                 </Link>
               );
             })}
+
+            {/* <GoogleTranslate /> */}
           </nav>
 
           {/* Right Side */}
           <div className="flex items-center gap-3">
             {/* Profile Dropdown */}
             <div className="relative hidden md:block">
-              <button
+              {/* <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="w-9 h-9 flex items-center justify-center border rounded-full hover:bg-[var(--color-primary-light)] transition"
+                className="w-9 h-9 flex items-center justify-center border rounded-full hover:bg-[var(--color-primary-light)] transition cursor-pointer"
               >
                 <User size={20} />
-              </button>
+              </button> */}
 
               {menuOpen && (
                 <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-xl border overflow-hidden z-50">
@@ -81,7 +105,7 @@ const Header = () => {
                     <p className="text-sm text-gray-600 mb-3 font-medium">
                       To check all available pujas & offers:
                     </p>
-                    <button className="w-full bg-gradient-to-r from-[var(--color-primary-light)] to-[var(--color-primary)] text-white font-semibold py-2.5 rounded-lg hover:shadow-lg transition">
+                    <button onClick={handleRedirect} className="w-full bg-gradient-to-r from-[var(--color-primary-light)] to-[var(--color-primary)] text-white font-semibold py-2.5 rounded-lg hover:shadow-lg transition cursor-pointer">
                       Login / Create an account
                     </button>
                   </div>
@@ -116,23 +140,23 @@ const Header = () => {
                     <div className="bg-gray-50 border rounded-lg p-3 mb-3 flex items-center gap-3">
                       <Phone size={18} className="text-[var(--color-primary)]" />
                       <div>
-                        <Link href={'tel:08000090999'} className="text-sm font-semibold text-gray-700">08000090999</Link>
+                        <Link href={'tel:7877961501'} className="text-sm font-semibold text-gray-700">7877961501</Link>
                         <p className="text-xs text-gray-500">10:30 AM - 7:30 PM</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="flex-1 flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50 transition">
+                      <Link href={'mailto:customerservices.devasetu@gmail.com'} className="flex-1 flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50 transition">
                         <Mail size={16} className="text-[var(--color-primary)]" /> Email Us
-                      </button>
-                      <button className="flex-1 flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50 transition">
+                      </Link>
+                      <Link href={'https://wa.me/7877961501'} className="flex-1 flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50 transition">
                         <MessageCircle size={16} className="text-green-600" /> WhatsApp
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
               )}
             </div>
-
+            <GoogleTranslate />
             {/* Mobile Hamburger */}
             <button
               className="md:hidden w-9 h-9 flex items-center justify-center border rounded-full hover:bg-[var(--color-primary-light)] transition"

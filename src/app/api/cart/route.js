@@ -20,7 +20,7 @@ export async function GET() {
       order: [["createdAt", "DESC"]],
     });
 
-    return NextResponse.json({ data: carts }, { status: 200 });
+    return NextResponse.json({ data: carts, status: 200 });
   } catch (error) {
     console.error("GET /api/cart error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -41,6 +41,7 @@ export async function POST(request) {
       otherCharges: body.other_charges || {},
       couponCode: body.coupon_code || null,
       paymentStatus: "PENDING",
+      isActivePrasad: body.isActivePrasad,
     });
 
     // 2️⃣ Insert package
@@ -53,6 +54,9 @@ export async function POST(request) {
         price: body.package.packagePrice,
         quantity: body.package.quantity,
         type: body.package.type,
+        location: body.package.location,
+        tithi: body.package.tithi,
+        date: body.package.date,
         productId: body.package.productId,
         productTitle: body.package.productTitle,
         productSlug: body.package.productSlug,
@@ -81,6 +85,7 @@ export async function POST(request) {
         cartId: newCart.id,
         whatsapp: user.whatsapp,
         name: user.name,
+        gotra: user.gotra,
         address: user.address,
         postalCode: user.postalCode,
         city: user.city,
