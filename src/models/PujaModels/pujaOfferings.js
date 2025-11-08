@@ -37,11 +37,6 @@ export default (sequelize, DataTypes) => {
       allowNull: true,
       field: "position",
     },
-    participants: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      field: "participants",
-    },
     strikePrice: {
       type: DataTypes.FLOAT,
       allowNull: true,

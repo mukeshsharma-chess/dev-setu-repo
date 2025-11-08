@@ -15,7 +15,6 @@ export async function GET(request) {
 
     const alteredModels = [];
 
-    // Loop through all models and sync individually
     for (const modelName of Object.keys(db)) {
       const model = db[modelName];
       if (model?.sync) {
