@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
-  endpoint: "https://blr1.digitaloceanspaces.com", // ✅ upload endpoint only
+  endpoint: process.env.DO_SPACES_ENDPOINT, // ✅ upload endpoint only DO_SPACES_ENDPOINT=https://blr1.digitaloceanspaces.com
   region: "blr1", // ✅ must match your space region
   forcePathStyle: false,
   credentials: {
@@ -35,7 +35,7 @@ export async function POST(req) {
     await s3.send(new PutObjectCommand(params));
 
     const fileUrl = `https://${process.env.DO_SPACES_BUCKET}.blr1.cdn.digitaloceanspaces.com/${fileName}`;
-    return NextResponse.json({ success: true, url: fileUrl });
+    return NextResponse.json({ success: true, status: 200, url: fileUrl });
   } catch (error) {
     console.error("Upload Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
