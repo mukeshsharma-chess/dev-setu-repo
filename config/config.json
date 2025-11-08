@@ -8,11 +8,12 @@
     "port": 3306
   },
   "test": {
-    "username": "root",
-    "password": "",
+    "username": "testing_user",
+    "password": "DevSetu@123_uat",
     "database": "dev_setu_testing",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "host": "104.131.177.106",
+    "dialect": "mysql",
+    "port": 3306
   },
   "production": {
     "username": "testing_user",
